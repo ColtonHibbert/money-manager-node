@@ -6,11 +6,12 @@ const fetch = require("node-fetch");
 const knex = require("knex");
 const config = require("./config/config.js");
 
-//won't break if .env is not present
+//won't break if .env is not present, won't overwrite default node_env or other env vars
 require("dotenv").config();
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
+        console.log("development")
         return (
             knex({
                 client: "pg",
@@ -24,6 +25,7 @@ function DBEnvironment() {
         )
     }
     if (process.env.NODE_ENV === "production") {
+        console.log("production")
         return (
             knex({
                 client: "pg",
@@ -40,5 +42,7 @@ const postgresDB = DBEnvironment();
 const app = express();
 
 app.get('/', (req, res) => res.send('money manager root get request'));
+
+const data = postgresDB.select("*").from("role").then(data => console.log(data));
 
 app.listen(process.env.PORT  || 3001, console.log(`app is running on port ${process.env.PORT}, or 3001`))
