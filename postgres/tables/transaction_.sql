@@ -3,7 +3,7 @@ BEGIN TRANSACTION;
 CREATE TABLE transaction_(
 	transaction_id SERIAL NOT NULL PRIMARY KEY,
 	amount MONEY,
-	date DATE,
+	date TIMESTAMP,
 	memo_note VARCHAR(200),
 	category_type_id INT,
 	transaction_type_id INT,

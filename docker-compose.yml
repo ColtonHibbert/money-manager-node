@@ -17,7 +17,7 @@ services:
     
     postgres:
         container_name: postgres-container
-        image: postgres:10.6
+        build: ./postgres
         environment:
             POSTGRES_PASSWORD: "${POSTGRES_PASSWORD_DOCKER}"
             POSTGRES_USER: "${POSTGRES_USER_DOCKER}"
