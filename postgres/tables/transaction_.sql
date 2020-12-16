@@ -7,7 +7,8 @@ CREATE TABLE transaction_(
 	memo_note VARCHAR(200),
 	category_type_id INT,
 	transaction_type_id INT,
-	user_id INT
+	user_id INT,
+    account_id INT
 );
 
 COMMIT;
