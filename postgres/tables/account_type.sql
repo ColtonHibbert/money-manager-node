@@ -1,0 +1,8 @@
+BEGIN TRANSACTION;
+
+CREATE TABLE account_type(
+	account_type_id SERIAL NOT NULL PRIMARY KEY,
+	type_name VARCHAR(50)
+);
+
+COMMIT;
