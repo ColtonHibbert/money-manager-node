@@ -1,0 +1,8 @@
+BEGIN TRANSACTION;
+
+CREATE TABLE category(
+	category_id SERIAL NOT NULL PRIMARY KEY,
+	category_name VARCHAR(150) UNIQUE
+);
+
+COMMIT;
