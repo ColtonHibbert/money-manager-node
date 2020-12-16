@@ -5,7 +5,7 @@ CREATE TABLE transaction_(
 	amount MONEY,
 	date TIMESTAMP,
 	memo_note VARCHAR(200),
-	category_type_id INT,
+	category_id INT,
 	transaction_type_id INT,
 	user_id INT,
     account_id INT
