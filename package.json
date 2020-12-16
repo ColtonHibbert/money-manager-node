@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "index.js",
-    "start-development": "set NODE_ENV=development&&nodemon index.js"
+    "start-docker-development-plus-build": "docker-compose --env-file ./config/.env.dev up --build",
+    "start-docker-development": "docker-compose --env-file ./config/.env.dev up",
+    "start-development": "set NODE_ENV=development&&nodemon --legacy-watch index.js"
   },
   "author": "",
   "license": "ISC",
