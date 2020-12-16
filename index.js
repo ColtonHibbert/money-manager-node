@@ -12,33 +12,6 @@ require("dotenv").config();
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
         console.log("development")
-        //below for local db
-        /*return (
-            knex({
-                client: "pg",
-                connection: {
-                    host: "127.0.0.1",
-                    user: config.DBUser,
-                    password: config.DBPassword,
-                    database: config.DBLocal
-                }
-            })
-        )*/
-        //Docker DB
-        /*
-        return(
-            knex({
-                client: "pg",
-                connection: {
-                    host: process.env.POSTGRES_HOST,
-                    user: process.env.POSTGRES_USER,
-                    password: process.env.POSTGRES_PASSWORD,
-                    database: process.env.POSTGRES_DB
-                }
-            })
-        )
-        */
-        //Docker DB uri
         return(
             knex({
                 client: "pg",
@@ -66,8 +39,6 @@ const app = express();
 app.use(morgan("combined"));
 
 app.get('/', (req, res) => res.send('money manager root get request'));
-
-console.log("volumes change 9");
 
 //const data = postgresDB.select("*").from("user_").then(data => console.log(data));
 
