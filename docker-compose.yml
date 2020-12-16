@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+    money-manager-node:
+        container_name: money-manager-container
+        build: ./
+        command: npm run start-development
+        working_dir: /usr/src/money-manager-node
+        environment:
+            POSTGRES_URI: "${POSTGRES_URI_DOCKER}"
+        links:
+            - postgres
+        ports:
+            -   "3001:3001"
+        volumes:
+            -   ./:/usr/src/money-manager-node
+    
+    postgres:
+        container_name: postgres-container
+        image: postgres:10.6
+        environment:
+            POSTGRES_PASSWORD: "${POSTGRES_PASSWORD_DOCKER}"
+            POSTGRES_USER: "${POSTGRES_USER_DOCKER}"
+            POSTGRES_DB: "${POSTGRES_DB_DOCKER}"
+            POSTGRES_HOST: postgres
+        ports:
+            - "5416:5432"
+
+        
+        
