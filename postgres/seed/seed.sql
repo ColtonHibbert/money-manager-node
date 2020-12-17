@@ -17,7 +17,7 @@ COMMIT;
 
 BEGIN TRANSACTION;
 
-INSERT INTO category(category_name) VALUES ('clothing'), ('debt'), ('donation'), ('food'), ('gifts'), ('housing'), ('medical'), ('pet'), ('personal care'), ('school'), ('shopping'), ('subscriptions'), ('technology'), ('transportation'), ('utilities');
+INSERT INTO category(category_name) VALUES ('clothing'), ('debt'), ('deposit'), ('donation'), ('food'), ('gifts'), ('housing'), ('medical'), ('pet'), ('personal care'), ('school'), ('shopping'), ('subscriptions'), ('technology'), ('transfer'), ('transportation'), ('utilities');
 
 COMMIT;
 
@@ -38,6 +38,7 @@ INSERT INTO category_item(category_item_name) VALUES
 ('credit cards'),
 ('student loans'),
 ('medical debt'),
+('deposit'),
 ('charity'),
 ('religious'),
 ('political'),
@@ -79,6 +80,7 @@ INSERT INTO category_item(category_item_name) VALUES
 ('phone'),
 ('computers'),
 ('devices'),
+('transfer'),
 ('vehicle payment'),
 ('fuel'),
 ('repairs'),
@@ -158,7 +160,7 @@ INSERT INTO transaction_(amount, memo_note, category_id, transaction_type_id, us
     1
 ),
 (
-    
+
 ),
 (),
 (),
