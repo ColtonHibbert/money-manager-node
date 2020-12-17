@@ -151,10 +151,14 @@ INSERT INTO transaction_(amount, memo_note, category_id, transaction_type_id, us
     1
 ),
 (
-
+    50.00,
+    'venmo for trip',
+    null,
+    2,
+    1
 ),
 (
-
+    
 ),
 (),
 (),
