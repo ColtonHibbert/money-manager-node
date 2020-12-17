@@ -143,11 +143,18 @@ INSERT INTO account(account_name, current_balance, low_alert_balance, user_id, a
     3
 );
 
-INSERT INTO transaction_(amount, memo_note, category_id, transaction_type_id, user_id, account_id) VALUES 
+INSERT INTO transaction_(
+    amount, 
+    memo_note, 
+    category_id,
+    category_item_id, 
+    transaction_type_id, 
+    user_id, 
+    account_id ) VALUES 
 (
     -75.00,
     'cheesecake factory',
-    4,
+    5,
     1,
     1,
     1
