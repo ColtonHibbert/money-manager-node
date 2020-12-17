@@ -29,3 +29,7 @@
 \i '/docker-entrypoint-initdb.d/constraints/personal_budget_category_item_constraints.sql'
 \i '/docker-entrypoint-initdb.d/constraints/transaction_constraints.sql'
 \i '/docker-entrypoint-initdb.d/constraints/user_constraints.sql'
+
+
+-- Seed database. --
+\i '/docker-entrypoint-initdb.d/seed/seed.sql'
