@@ -7,7 +7,7 @@ BEGIN TRANSACTION;
 
 INSERT INTO role(role_name) VALUES ('personal'), ('household_member'), ('household_owner');
 
-INSERT INTO account_type(type_name) VALUES ('checking'), ('savings'), ('credit');
+INSERT INTO account_type(type_name) VALUES ('checking'), ('savings'), ('debt');
 
 INSERT INTO transaction_type(type_name) VALUES ('withdrawal'), ('deposit'), ('transfer');
 
@@ -99,6 +99,48 @@ COMMIT;
 
 -- Seed User --
 
+BEGIN TRANSACTION;
+
+INSERT INTO user_(first_name, last_name, email, address, phone, about, role_id) VALUES (
+    'Steve',
+    'Jobs',
+    'stevejobs@moneymanagerexample.com',
+    '123 State Street, Salt Lake City, UT 84123',
+    '801-555-7777',
+    'I am really excited to budget!',
+    1
+);
+
+INSERT INTO auth(password_hash, session_id, csrf_token, user_id, role_id) VALUES(
+    'futurehash',
+    'futuresessionid',
+    'futurecsrftoken',
+    1,
+    1
+);
+
+INSERT INTO account(account_name, current_balance, low_alert_balance, user_id, account_type_id) VALUES (
+    'Wells Fargo', 
+    8000.00, 
+    2000.00,
+    1,
+    1
+),
+(
+    'Chase Bank',
+    65,000.00,
+    5,000.00,
+    1,
+    2
+),
+(
+    'Bank of America',
+    -
+);
+
+
+
+COMMIT;
 
 -- Seed Auth -- 
 
