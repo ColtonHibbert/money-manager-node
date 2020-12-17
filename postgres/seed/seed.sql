@@ -1,3 +1,6 @@
+--Seed Development Database--
+
+
 --Seed default roles and types--
 
 BEGIN TRANSACTION;
@@ -14,7 +17,7 @@ COMMIT;
 
 BEGIN TRANSACTION;
 
-INSERT INTO category(category_name) VALUES ('clothing'), ('debt'), ('donation'), ('food'), ('gifts'), ('housing'), ('medical'), ('pet'), ('personal care'), ('school'), ('shopping'), ('subscriptions'), ('transportation'), ('utilities');
+INSERT INTO category(category_name) VALUES ('clothing'), ('debt'), ('donation'), ('food'), ('gifts'), ('housing'), ('medical'), ('pet'), ('personal care'), ('school'), ('shopping'), ('subscriptions'), ('technology'), ('transportation'), ('utilities');
 
 COMMIT;
 
@@ -46,6 +49,57 @@ INSERT INTO category_item(category_item_name) VALUES
 ('service'),
 ('maintenance'),
 ('mortgage'),
-
+('rent'),
+('repairs'),
+('taxes'),
+('medical insurance'),
+('dental insurance'),
+('vision insurance'),
+('disability insurance'),
+('life insurance'),
+('medical bills'),
+('medication'),
+('pet food'),
+('pet medication'),
+('pet toys'),
+('veterinarian'),
+('haircuts'),
+('cosmetics'),
+('salon'),
+('spa'),
+('tuition'),
+('books'),
+('furniture'),
+('outdoors'),
+('sporting'),
+('technology'),
+('gym membership'),
+('streaming'),
+('television'),
+('phone'),
+('computers'),
+('devices'),
+('vehicle payment'),
+('fuel'),
+('repairs'),
+('registration/taxes'),
+('parking'),
+('insurance'),
+('public transportation'),
+('internet'),
+('cable'),
+('heating'),
+('garbage'),
+('electricity'),
+('water'),
+('sewage'),
+('gas');
 
 COMMIT;
+
+-- Seed User --
+
+
+-- Seed Auth -- 
+
+
