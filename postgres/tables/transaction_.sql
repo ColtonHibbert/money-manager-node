@@ -6,6 +6,7 @@ CREATE TABLE transaction_(
 	date TIMESTAMP,
 	memo_note VARCHAR(200),
 	category_id INT,
+	category_item_id INT,
 	transaction_type_id INT,
 	user_id INT,
     account_id INT
