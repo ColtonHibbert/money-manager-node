@@ -83,7 +83,6 @@ INSERT INTO category_item(category_item_name) VALUES
 ('transfer'),
 ('vehicle payment'),
 ('fuel'),
-('repairs'),
 ('registration/taxes'),
 ('parking'),
 ('insurance'),
@@ -282,8 +281,9 @@ INSERT INTO personal_budget_category_item(
 (16,59,1),
 (16,60,1),
 (16,61,1),
-(16,62,1),
+(16,26,1),
 
+(17,62,1),
 (17,63,1),
 (17,64,1),
 (17,65,1),
@@ -291,7 +291,6 @@ INSERT INTO personal_budget_category_item(
 (17,67,1),
 (17,68,1),
 (17,69,1),
-(17,70,1),
 
 
 COMMIT;
