@@ -155,6 +155,7 @@ INSERT INTO transaction_(
     -75.00,
     'cheesecake factory',
     5,
+    18,
     1,
     1,
     1
@@ -162,12 +163,15 @@ INSERT INTO transaction_(
 (
     50.00,
     'venmo for trip',
-    null,
+    3,
+    13,
     2,
-    1
+    1,
+    2
 ),
 (
-
+    100.00,
+    'spend amex'
 ),
 (),
 (),
