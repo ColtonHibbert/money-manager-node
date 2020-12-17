@@ -136,7 +136,7 @@ INSERT INTO account(account_name, current_balance, low_alert_balance, user_id, a
     2
 ),
 (
-    'Bank of America',
+    'Bank of America Credit Card',
     -3400.00,
     -5000.00,
     1,
@@ -170,22 +170,47 @@ INSERT INTO transaction_(
     2
 ),
 (
-    100.00,
-    'spend amex'
-),
-(),
-(),
-(),
-(
+    -100.00,
+    'new shoes',
+    1,
+    9,
+    1,
+    1,
+    3
+);
 
-),
-(),
-();
+INSERT INTO personal_budget_category(
+    budget_amount,
+    category_id,
+    user_id
+) VALUES 
+(0.00, 1, 1),
+(0.00, 2, 1),
+(0.00, 3, 1),
+(0.00, 4, 1),
+(0.00, 5, 1),
+(0.00, 6, 1),
+(0.00, 7, 1),
+(0.00, 8, 1),
+(0.00, 9, 1),
+(0.00, 10, 1),
+(0.00, 11, 1),
+(0.00, 12, 1),
+(0.00, 13, 1),
+(0.00, 14, 1),
+(0.00, 15, 1),
+(0.00, 16, 1),
+(0.00, 17, 1);
 
+INSERT INTO personal_budget_category_item(
+    personal_budget_category_id,
+    category_item_id,
+    user_id
+) VALUES 
+(1, 1, )
 
 
 COMMIT;
 
--- Seed Auth -- 
 
 
