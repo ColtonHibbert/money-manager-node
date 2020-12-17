@@ -135,8 +135,35 @@ INSERT INTO account(account_name, current_balance, low_alert_balance, user_id, a
 ),
 (
     'Bank of America',
-    -
+    -3400.00,
+    -5000.00,
+    1,
+    3
 );
+
+INSERT INTO transaction_(amount, memo_note, category_id, transaction_type_id, user_id, account_id) VALUES 
+(
+    -75.00,
+    'cheesecake factory',
+    4,
+    1,
+    1,
+    1
+),
+(
+
+),
+(
+
+),
+(),
+(),
+(),
+(
+
+),
+(),
+();
 
 
 
