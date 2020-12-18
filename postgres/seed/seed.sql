@@ -120,13 +120,14 @@ INSERT INTO auth(password_hash, session_id, csrf_token, user_id, role_id) VALUES
     1
 );
 
-INSERT INTO account(account_name, current_balance, low_alert_balance, user_id, account_type_id) VALUES (
+INSERT INTO account(account_name, current_balance, low_alert_balance, user_id, account_type_id) VALUES 
+(
     'Wells Fargo', 
     8000.00, 
     2000.00,
     1,
     1
-),
+), 
 (
     'Chase Bank',
     65,000.00,
@@ -144,6 +145,7 @@ INSERT INTO account(account_name, current_balance, low_alert_balance, user_id, a
 
 INSERT INTO transaction_(
     amount, 
+    date,
     memo_note, 
     category_id,
     category_item_id, 
@@ -152,6 +154,7 @@ INSERT INTO transaction_(
     account_id ) VALUES 
 (
     -75.00,
+    DEFAULT,
     'cheesecake factory',
     5,
     18,
@@ -161,6 +164,7 @@ INSERT INTO transaction_(
 ),
 (
     50.00,
+    DEFAULT,
     'venmo for trip',
     3,
     13,
@@ -170,6 +174,7 @@ INSERT INTO transaction_(
 ),
 (
     -100.00,
+    DEFAULT,
     'new shoes',
     1,
     9,
