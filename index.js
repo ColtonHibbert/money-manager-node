@@ -9,6 +9,8 @@ const config = require("./config/config.js");
 //won't break if .env is not present, won't overwrite default node_env or other env vars
 require("dotenv").config();
 
+const login = require('./controllers/login.js');
+
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
         console.log("development")
