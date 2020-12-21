@@ -8,8 +8,8 @@ const morgan = require("morgan");
 const config = require("./config/config.js");
 //won't break if .env is not present, won't overwrite default node_env or other env vars
 require("dotenv").config();
-
-const login = require('./controllers/login.js');
+const login = require("./controllers/handleLogin.js");
+const { handleLogin } = require("./controllers/login.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -40,7 +40,11 @@ const app = express();
 
 app.use(morgan("combined"));
 
+app.use(bodyparser.json());
+
 app.get('/', (req, res) => res.send('money manager root get request'));
+
+app.post('/login', (req, res, next) => { handleLogin(req, res, next, postgresDB, brcypt ); })
 
 //const data = postgresDB.select("*").from("user_").then(data => console.log(data));
 
