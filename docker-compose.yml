@@ -8,6 +8,7 @@ services:
         working_dir: /usr/src/money-manager-node
         environment:
             POSTGRES_URI: "${POSTGRES_URI_DOCKER}"
+            NODE_ENV: "${NODE_ENV}"
         ports:
             -   "3001:3001"
         volumes:

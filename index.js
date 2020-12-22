@@ -20,7 +20,7 @@ function DBEnvironment() {
         return(
             knex({
                 client: "pg",
-                connection: process.env.DATABASE_URI
+                connection: process.env.POSTGRES_URI
             })
         )
     }
@@ -39,7 +39,7 @@ function DBEnvironment() {
 
 const postgresDB = DBEnvironment();
 
-console.log(postgresDB.select("*").from("user_"));
+postgresDB.select("*").from("user_").then(data => console.log(data));
 
 const app = express();
 
