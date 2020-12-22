@@ -17,7 +17,9 @@ const signUp = (req, res, next, postgresDB, bcrypt) => {
         trx.postgresDB.transaction(async (trx) => {
             const user = await trx.insert({
                 email: email
-            }).into("user_").returning("*")
+            })
+            .returning("*")
+            .into("user_")
 
             await trx.insert({
                 password_hash: hashedPassword,
@@ -29,5 +31,7 @@ const signUp = (req, res, next, postgresDB, bcrypt) => {
         .catch(trx.rollback)
     } )
     .catch(err => res.status(400).json("unable to sign up"))
+
+    return res.json("sign up inserted");
 
 }
