@@ -11,8 +11,8 @@ const bcrypt = require("bcryptjs");
 //won't break if .env is not present, won't overwrite default node_env or other env vars
 require("dotenv").config();
 
-
-const { handleLogin } = require("./controllers/login.js");
+//const { handleLogin }  = require("./controllers/signUp");
+const { handleSignUp } = require("./controllers/signUp");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -39,7 +39,11 @@ function DBEnvironment() {
 
 const postgresDB = DBEnvironment();
 
+console.log(postgresDB.select("*").from("user_"));
+
 const app = express();
+
+app.use(cors());
 
 app.use(morgan("combined"));
 
@@ -47,7 +51,7 @@ app.use(bodyparser.json());
 
 app.get('/', (req, res) => res.send('money manager root get request'));
 
-app.post('/login', (req, res, next) => { handleLogin(req, res, next, postgresDB, brcypt ); })
+app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt ); })
 
 //const data = postgresDB.select("*").from("user_").then(data => console.log(data));
 
