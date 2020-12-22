@@ -13,23 +13,21 @@ const handleSignUp = (req, res, next, postgresDB, bcrypt) => {
     }
 
     
-    postgresDB.transaction( (trx) => {
+    postgresDB.transaction(async (trx) => {
 
-        trx.insert({
+        const user = await trx.insert({
             email: email
         })
+        .returning("*")
         .into("user_")
-        .then(trx.commit)
-        .catch(trx.rollback)
-
-        //.returning("*")
-        /* trx.insert({
+        
+        await trx.insert({
             password_hash: hashedPassword,
             user_id: user[0].user_id
         })
         .into("auth")
         .then(trx.commit)
-        .catch(trx.rollback)*/
+        .catch(trx.rollback)
 
     })
     .catch(err => res.status(400).json("error with signup"))
