@@ -6,9 +6,12 @@ const fetch = require("node-fetch");
 const knex = require("knex");
 const morgan = require("morgan");
 const config = require("./config/config.js");
+const bcrypt = require("bcryptjs");
+
 //won't break if .env is not present, won't overwrite default node_env or other env vars
 require("dotenv").config();
-const login = require("./controllers/handleLogin.js");
+
+
 const { handleLogin } = require("./controllers/login.js");
 
 function DBEnvironment() {
