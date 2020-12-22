@@ -32,7 +32,6 @@ const handleSignUp = (req, res, next, postgresDB, bcrypt) => {
     })
     .catch(err => res.status(400).json("error with signup"))
     
-
     return res.json("sign up inserted");
 
 }
