@@ -1,4 +1,4 @@
-const signUp = (req, res, next, postgresDB, bcrypt) => {
+const handleSignUp = (req, res, next, postgresDB, bcrypt) => {
     const { email, password } = req.body;
 
     if(!email || !password) {
@@ -11,27 +11,34 @@ const signUp = (req, res, next, postgresDB, bcrypt) => {
     } catch(err) {
         return res.status(400).json("the password is invalid or has too many characters");
     }
+
     
-
     postgresDB.transaction( (trx) => {
-        trx.postgresDB.transaction(async (trx) => {
-            const user = await trx.insert({
-                email: email
-            })
-            .returning("*")
-            .into("user_")
 
-            await trx.insert({
-                password_hash: hashedPassword,
-                user_id: user[0].user_id
-            })
-            .into("auth")
-            
-        }).then(trx.commit)
+        trx.insert({
+            email: email
+        })
+        .into("user_")
+        .then(trx.commit)
         .catch(trx.rollback)
-    } )
-    .catch(err => res.status(400).json("unable to sign up"))
+
+        //.returning("*")
+        /* trx.insert({
+            password_hash: hashedPassword,
+            user_id: user[0].user_id
+        })
+        .into("auth")
+        .then(trx.commit)
+        .catch(trx.rollback)*/
+
+    })
+    .catch(err => res.status(400).json("error with signup"))
+    
 
     return res.json("sign up inserted");
 
+}
+
+module.exports = {
+    handleSignUp
 }
