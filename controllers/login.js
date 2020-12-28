@@ -1,5 +1,4 @@
-const redis = require("redis");
-const redisClient = redis.createClient({host: process.env.REDIS_URI_DOCKER });
+
 
 const handleLogin = async (req, res, next, postgresDB, bcrypt ) => {
     const { email, password } =  req.body;
