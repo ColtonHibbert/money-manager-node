@@ -9,6 +9,7 @@ services:
         environment:
             POSTGRES_URI: "${POSTGRES_URI_DOCKER}"
             NODE_ENV: "${NODE_ENV}"
+            REDIS_URI: "${REDIS_URI_DOCKER}"
         ports:
             -   "3001:3001"
         volumes:
@@ -24,6 +25,14 @@ services:
             POSTGRES_HOST: postgres
         ports:
             - "5416:5432"
+
+    redis: 
+        container_name: redis-container
+        build: ./redis
+        ports:
+            -   "6379:6379"
+        
+
 
         
         
