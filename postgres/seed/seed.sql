@@ -114,7 +114,7 @@ INSERT INTO user_(first_name, last_name, email, address, phone, about, joined, r
 );
 
 INSERT INTO auth(password_hash, session_id, csrf_token, user_id, role_id) VALUES(
-    'futurehash',
+    '$2a$14$Cqmhau6p.TBw9sQrwdBEYesDppVYshif7DSEs.LtUVUoaRe6RRl8G',
     'futuresessionid',
     'futurecsrftoken',
     1,
