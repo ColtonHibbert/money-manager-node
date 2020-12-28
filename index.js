@@ -49,8 +49,10 @@ postgresDB.select("*").from("user_").then(data => console.log(data));
 const app = express();
 
 app.use(session({
+    name: "mySession",
     secret: 'futuresecret',
     resave: false,
+    saveUninitialized: true,
     cookie: {
         httpOnly: true,
         secure: true
