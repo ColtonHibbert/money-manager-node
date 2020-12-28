@@ -8,7 +8,8 @@ const morgan = require("morgan");
 const config = require("./config/config.js");
 const bcrypt = require("bcryptjs");
 const redis = require("redis");
-const sessions = require("client-sessions");
+const session = require("express-session");
+
 
 //won't break if .env is not present, won't overwrite default node_env or other env vars
 require("dotenv").config();
@@ -47,6 +48,15 @@ postgresDB.select("*").from("user_").then(data => console.log(data));
 
 const app = express();
 
+app.use(session({
+    secret: 'futuresecret',
+    resave: false,
+    cookie: {
+        httpOnly: true,
+        secure: true
+    }
+}))
+
 app.use(cors());
 
 app.use(morgan("combined"));
@@ -55,7 +65,7 @@ app.use(bodyparser.json());
 
 app.get('/', (req, res) => res.send('money manager root get request'));
 
-app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt ); });
+app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt, app ); });
 
 app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB, bcrypt); });
 

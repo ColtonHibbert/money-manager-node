@@ -1,5 +1,12 @@
-const handleSignUp = (req, res, next, postgresDB, bcrypt) => {
+const session = require("express-session");
+
+
+const handleSignUp = (req, res, next, postgresDB, bcrypt, app) => {
+
+
     const { email, password } = req.body;
+
+    console.log(req.session)
 
     if(!email || !password) {
         return res.status(400).json("missing email or password");
@@ -11,7 +18,6 @@ const handleSignUp = (req, res, next, postgresDB, bcrypt) => {
     } catch(err) {
         return res.status(400).json("the password is invalid or has too many characters");
     }
-
     
     postgresDB.transaction(async (trx) => {
 
