@@ -7,8 +7,8 @@ const knex = require("knex");
 const morgan = require("morgan");
 const config = require("./config/config.js");
 const bcrypt = require("bcryptjs");
-const redis = require("redis");
-const redisClient = redis.createClient({host: '127.0.0.1'});
+//const redis = require("redis");
+//const redisClient = redis.createClient({host: '127.0.0.1'});
 
 //won't break if .env is not present, won't overwrite default node_env or other env vars
 require("dotenv").config();
