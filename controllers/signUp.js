@@ -6,7 +6,7 @@ const handleSignUp = (req, res, next, postgresDB, bcrypt, app) => {
 
     const { email, password } = req.body;
 
-    console.log(req.session)
+    console.log(req.cookie)
 
     if(!email || !password) {
         return res.status(400).json("missing email or password");

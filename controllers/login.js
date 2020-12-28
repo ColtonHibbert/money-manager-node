@@ -1,8 +1,9 @@
-const session = require("express-session");
+//const session = require("express-session");
 
 
 const handleLogin = async (req, res, next, postgresDB, bcrypt ) => {
-    console.log(req.session);
+
+    
     const { email, password } =  req.body;
     if(!email || !password) {
         return res.status(400).json("unable to login, missing email or password");
@@ -19,6 +20,8 @@ const handleLogin = async (req, res, next, postgresDB, bcrypt ) => {
     const verifyPassword = await bcrypt.compareSync(password, storedHashedPassword);
     
     if(verifyPassword) {
+        req.session.userId = user.user_id;
+        console.log(req.session);
         return res.send(JSON.stringify(user));
     } 
     if(!verifyPassword) {
