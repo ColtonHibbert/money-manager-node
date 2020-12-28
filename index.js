@@ -9,6 +9,7 @@ const config = require("./config/config.js");
 const bcrypt = require("bcryptjs");
 const redis = require("redis");
 const session = require("express-session");
+const sessions = require("client-sessions")
 
 
 //won't break if .env is not present, won't overwrite default node_env or other env vars
@@ -48,7 +49,7 @@ postgresDB.select("*").from("user_").then(data => console.log(data));
 
 const app = express();
 
-app.use(session({
+/*app.use(session({
     name: "mySession",
     secret: 'futuresecret',
     resave: false,
@@ -57,7 +58,14 @@ app.use(session({
         httpOnly: true,
         secure: true
     }
+}))*/
+
+app.use(sessions({
+    cookieName: "session",
+    secret: "secretkey",
+    duration: 30 * 60
 }))
+
 
 app.use(cors());
 
