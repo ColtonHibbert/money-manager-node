@@ -53,7 +53,7 @@ app.use(session({
     name: "mySession",
     secret: 'futuresecret',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
         httpOnly: true,
         secure: true
