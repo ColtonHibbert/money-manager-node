@@ -49,7 +49,7 @@ postgresDB.select("*").from("user_").then(data => console.log(data));
 
 const app = express();
 
-/*app.use(session({
+app.use(session({
     name: "mySession",
     secret: 'futuresecret',
     resave: false,
@@ -58,13 +58,19 @@ const app = express();
         httpOnly: true,
         secure: true
     }
-}))*/
+}))
 
-app.use(sessions({
+const makeSession = app.use(sessions({
     cookieName: "session",
     secret: "secretkey",
-    duration: 30 * 60
+    duration: 60
 }))
+
+/*app.use(sessions({
+    cookieName: "session",
+    secret: "secretkey",
+    duration: 60
+}))*/
 
 
 app.use(cors());
@@ -73,10 +79,20 @@ app.use(morgan("combined"));
 
 app.use(bodyparser.json());
 
-app.get('/', (req, res) => res.send('money manager root get request'));
+app.use(session({secret: "Shh, its a secret!"}));
+
+app.get('/', function(req, res){
+   
+});
+
+//app.get('/', (req, res) => res.send('money manager root get request'));
 
 app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt, app ); });
 
 app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB, bcrypt); });
 
 app.listen(process.env.PORT  || 3001, console.log(`app is running on port ${process.env.PORT}, or 3001`))
+
+module.exports = {
+    makeSession
+}
