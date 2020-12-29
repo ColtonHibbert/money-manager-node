@@ -69,6 +69,8 @@ const makeSession = app.use(sessions({
 
 const sessionChecker = (req, res, next) => {
     console.log(req.session.id);
+
+    //res.redirect("/login");
 }
 
 /*app.use(sessions({
