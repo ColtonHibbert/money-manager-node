@@ -22,7 +22,8 @@ const handleLogin = async (req, res, next, postgresDB, bcrypt ) => {
     if(verifyPassword) {
         req.session.userId = user.user_id;
         
-        console.log(req.connect);
+        console.log(req.session);
+        console.log(req.session.id);
         return res.send(JSON.stringify(user));
     } 
     if(!verifyPassword) {
