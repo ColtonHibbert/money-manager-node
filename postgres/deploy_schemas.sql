@@ -13,6 +13,7 @@
 \i '/docker-entrypoint-initdb.d/tables/personal_budget_category_item.sql'
 \i '/docker-entrypoint-initdb.d/tables/personal_budget_category.sql'
 \i '/docker-entrypoint-initdb.d/tables/role.sql'
+\i '/docker-entrypoint-initdb.d/tables/session.sql'
 \i '/docker-entrypoint-initdb.d/tables/transaction_.sql'
 \i '/docker-entrypoint-initdb.d/tables/transaction_type.sql'
 \i '/docker-entrypoint-initdb.d/tables/user_.sql'
@@ -27,6 +28,7 @@
 \i '/docker-entrypoint-initdb.d/constraints/household_owner_constraints.sql'
 \i '/docker-entrypoint-initdb.d/constraints/personal_budget_category_constraints.sql'
 \i '/docker-entrypoint-initdb.d/constraints/personal_budget_category_item_constraints.sql'
+\i '/docker-entrypoint-initdb.d/constraints/session_constraints.sql'
 \i '/docker-entrypoint-initdb.d/constraints/transaction_constraints.sql'
 \i '/docker-entrypoint-initdb.d/constraints/user_constraints.sql'
 

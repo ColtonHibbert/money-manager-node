@@ -10,6 +10,7 @@ services:
             POSTGRES_URI: "${POSTGRES_URI_DOCKER}"
             NODE_ENV: "${NODE_ENV}"
             REDIS_URI: "${REDIS_URI_DOCKER}"
+            SESSION_SECRET: ${SESSION_SECRET_DOCKER}
         ports:
             -   "3001:3001"
         volumes:
