@@ -61,11 +61,11 @@ app.use(session({
     }
 }))
 
-const makeSession = app.use(sessions({
+/*const makeSession = app.use(sessions({
     cookieName: "session",
     secret: "secretkey",
     duration: 60
-}))
+}))*/
 
 const sessionChecker = (req, res, next) => {
     console.log(req.session.id);
