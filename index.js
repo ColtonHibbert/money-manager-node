@@ -9,7 +9,7 @@ const config = require("./config/config.js");
 const bcrypt = require("bcryptjs");
 const redis = require("redis");
 const session = require("express-session");
-const sessions = require("client-sessions")
+let RedisStore = require("connect-redis")(session);
 
 
 //won't break if .env is not present, won't overwrite default node_env or other env vars
@@ -17,8 +17,6 @@ require("dotenv").config();
 
 const { handleSignUp } = require("./controllers/signUp");
 const { handleLogin } = require("./controllers/login.js");
-
-const redisClient = redis.createClient(process.env.REDIS_URI);
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -47,19 +45,38 @@ const postgresDB = DBEnvironment();
 
 postgresDB.select("*").from("user_").then(data => console.log(data));
 
+let redisClient = redis.createClient(process.env.REDIS_URI);
+
 const app = express();
 
-app.use(session({
-    name: "mySession",
-    secret: 'futuresecret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        httpOnly: true,
-        secure: false,
-        maxAge: 60000
-    }
-}))
+if (process.env.NODE_ENV === "development" ) {
+    app.use(session({
+        name: "mySession",
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            secure: false,
+            maxAge: 60000 * 2
+        },
+        store: new RedisStore({ client: redisClient })
+    }))
+}
+if (process.env.NODE_ENV !== "development" ) {
+    app.use(session({
+        name: "mySession",
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            secure: true,
+            maxAge: 60000 * 2
+        },
+        store: new RedisStore({ client: redisClient })
+    }))
+}
 
 
 const sessionChecker = (req, res, next) => {
@@ -85,6 +102,8 @@ app.get('/', function(req, res){
 app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt, app ); });
 
 app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB, bcrypt); });
+
+app.post("/accounts", (req, res, next) => {});
 
 app.listen(process.env.PORT  || 3001, console.log(`app is running on port ${process.env.PORT}, or 3001`))
 
