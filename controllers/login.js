@@ -29,7 +29,7 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
             .catch(trx.rollback)
         })
         .catch( (err) => {
-            res.status(400).json("unable to log in, server error")
+            res.status(400).json("unable to log in, server error");
         })
 
         req.session.userId = user.user_id;
@@ -47,11 +47,9 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
         return res.send(JSON.stringify(user));
     } 
     if(!verifyPassword) {
-        res.status(400).json("unable to login")
+        res.status(400).json("unable to login");
     }
-
-})
-.catch(err => res.status(400).json("unable to login"))
+});
 
 module.exports = {
     handleLogin

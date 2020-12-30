@@ -99,7 +99,7 @@ app.get('/', function(req, res){
 
 //app.get('/', (req, res) => res.send('money manager root get request'));
 
-app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt, app ); });
+app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt ); });
 
 app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB, bcrypt); });
 
