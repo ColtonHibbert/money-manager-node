@@ -61,24 +61,12 @@ app.use(session({
     }
 }))
 
-/*const makeSession = app.use(sessions({
-    cookieName: "session",
-    secret: "secretkey",
-    duration: 60
-}))*/
 
 const sessionChecker = (req, res, next) => {
     console.log(req.session.id);
 
     //res.redirect("/login");
 }
-
-/*app.use(sessions({
-    cookieName: "session",
-    secret: "secretkey",
-    duration: 60
-}))*/
-
 
 app.use(cors());
 
@@ -100,6 +88,3 @@ app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB,
 
 app.listen(process.env.PORT  || 3001, console.log(`app is running on port ${process.env.PORT}, or 3001`))
 
-module.exports = {
-    makeSession
-}

@@ -1,14 +1,8 @@
 const session = require("express-session");
-const makeSession = require("../index.js").makeSession;
 
 const handleSignUp = (req, res, next, postgresDB, bcrypt, app) => {
 
-
     const { email, password } = req.body;
-
-    //makeSession();
-
-    //console.log(req.session)
 
     if(!email || !password) {
         return res.status(400).json("missing email or password");
