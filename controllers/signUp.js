@@ -1,6 +1,6 @@
 const session = require("express-session");
 
-const handleSignUp = (req, res, next, postgresDB, bcrypt, app) => {
+const handleSignUp = (req, res, next, postgresDB, bcrypt) => {
 
     const { email, password } = req.body;
 

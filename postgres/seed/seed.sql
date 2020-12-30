@@ -113,10 +113,8 @@ INSERT INTO user_(first_name, last_name, email, address, phone, about, joined, r
     1
 );
 
-INSERT INTO auth(password_hash, session_id, csrf_token, user_id, role_id) VALUES(
+INSERT INTO auth(password_hash, user_id, role_id) VALUES(
     '$2a$14$Cqmhau6p.TBw9sQrwdBEYesDppVYshif7DSEs.LtUVUoaRe6RRl8G',
-    'futuresessionid',
-    'futurecsrftoken',
     1,
     1
 );
