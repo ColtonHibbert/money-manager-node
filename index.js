@@ -11,14 +11,13 @@ const redis = require("redis");
 const session = require("express-session");
 let RedisStore = require("connect-redis")(session);
 
-
 //won't break if .env is not present, won't overwrite default node_env or other env vars
 require("dotenv").config();
 
 const { handleSignUp } = require("./controllers/signUp");
 const { handleLogin } = require("./controllers/login.js");
 const { handleAccounts } = require("./controllers/accounts.js");
-const { handleTransactions } = require("./controllers/accounts.js");
+const { handleTransactions } = require("./controllers/transactions.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -51,6 +50,8 @@ let redisClient = redis.createClient(process.env.REDIS_URI);
 
 const app = express();
 
+app.use(cors());
+
 if (process.env.NODE_ENV === "development" ) {
     app.use(session({
         name: "mySession",
@@ -60,7 +61,7 @@ if (process.env.NODE_ENV === "development" ) {
         cookie: {
             httpOnly: true,
             secure: false,
-            maxAge: 60000 * 2
+            maxAge: 60000 * 5
         },
         store: new RedisStore({ client: redisClient })
     }))
@@ -74,7 +75,7 @@ if (process.env.NODE_ENV !== "development" ) {
         cookie: {
             httpOnly: true,
             secure: true,
-            maxAge: 60000 * 2
+            maxAge: 60000 * 30
         },
         store: new RedisStore({ client: redisClient })
     }))
@@ -87,7 +88,6 @@ const sessionChecker = (req, res, next) => {
     //res.redirect("/login");
 }
 
-app.use(cors());
 
 app.use(morgan("combined"));
 
