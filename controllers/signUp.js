@@ -1,4 +1,3 @@
-const session = require("express-session");
 
 const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
 
