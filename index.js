@@ -18,7 +18,7 @@ require("dotenv").config();
 const { handleSignUp } = require("./controllers/signUp");
 const { handleLogin } = require("./controllers/login.js");
 const { handleAccounts } = require("./controllers/accounts.js");
-const {}
+const { handleTransactions } = require("./controllers/accounts.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -106,7 +106,7 @@ app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB,
 
 app.get("/accounts", (req, res, next) => { handleAccounts(req, res, next, postgresDB )});
 
-app.get("/transactions", (req, res, next => { handleTransactions(req, res, next, postgresDB )});
+app.get("/transactions", (req, res, next) => { handleTransactions(req, res, next, postgresDB )});
 
 app.listen(process.env.PORT  || 3001, console.log(`app is running on port ${process.env.PORT}, or 3001`))
 
