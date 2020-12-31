@@ -1,5 +1,5 @@
 
-const handleTransactions = (async (req, res, next, postgresDB ) {
+const handleTransactions = (async (req, res, next, postgresDB ) => {
 
     const userId = req.session.userId;
     
