@@ -2,6 +2,8 @@
 const handleTransactions = (async (req, res, next, postgresDB ) => {
 
     const userId = req.session.userId;
+    console.log("handleTransactions: sessionid ", req.session.id );
+    console.log("handleTransactions: userId: ", req.session.userId );
     
     const transactions = await postgresDB.select("*")
     .from("transaction_")

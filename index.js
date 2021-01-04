@@ -51,7 +51,7 @@ let redisClient = redis.createClient(process.env.REDIS_URI);
 const app = express();
 
 app.use(cors({
-    origin: "http://127.0.0.1:3000",
+    origin: "http://localhost:3000",
     credentials: true
  }));
 
@@ -64,7 +64,6 @@ if (process.env.NODE_ENV === "development" ) {
         cookie: {
             httpOnly: true,
             secure: false,
-            domain: "http://127.0.0.1:3000",
             maxAge: 60000 * 60 * 24
         },
         store: new RedisStore({ client: redisClient })
@@ -87,9 +86,14 @@ if (process.env.NODE_ENV !== "development" ) {
 
 
 const sessionChecker = (req, res, next) => {
-    console.log(req.session.id);
-
-    //res.redirect("/login");
+    console.log("sessionChecker session id", req.session.id);
+    console.log("sessionChecker user id ", req.session.userId);
+    if (req.session.userId) {
+        next();
+    }
+    if(!req.session.userId) {
+        res.status(400).json("invalid credentials, please log in");
+    }
 }
 
 
@@ -97,20 +101,18 @@ app.use(morgan("combined"));
 
 app.use(bodyparser.json());
 
-app.use(session({secret: "Shh, its a secret!"}));
+//app.use(session({secret: "Shh, its a secret!"}));
 
-app.get('/', function(req, res){
-   
-});
-
+//app.get('/', function(req, res){ });
 
 app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt ); });
 
 app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB, bcrypt); });
 
-app.get("/accounts", (req, res, next) => { handleAccounts(req, res, next, postgresDB )});
+// protected routes
+app.get("/accounts", sessionChecker, (req, res, next) => { handleAccounts(req, res, next, postgresDB )});
 
-app.get("/transactions", (req, res, next) => { handleTransactions(req, res, next, postgresDB )});
+app.get("/transactions", sessionChecker, (req, res, next) => { handleTransactions(req, res, next, postgresDB )});
 
 app.listen(process.env.PORT  || 3001, console.log(`app is running on port ${process.env.PORT}, or 3001`))
 
