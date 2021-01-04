@@ -64,7 +64,7 @@ if (process.env.NODE_ENV === "development" ) {
         cookie: {
             httpOnly: true,
             secure: false,
-            maxAge: 60000 * 5
+            maxAge: 60000 * 60 * 24
         },
         store: new RedisStore({ client: redisClient })
     }))
