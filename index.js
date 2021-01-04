@@ -51,7 +51,7 @@ let redisClient = redis.createClient(process.env.REDIS_URI);
 const app = express();
 
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: "http://127.0.0.1:3000",
     credentials: true
  }));
 
@@ -64,6 +64,7 @@ if (process.env.NODE_ENV === "development" ) {
         cookie: {
             httpOnly: true,
             secure: false,
+            domain: "http://127.0.0.1:3000",
             maxAge: 60000 * 60 * 24
         },
         store: new RedisStore({ client: redisClient })
