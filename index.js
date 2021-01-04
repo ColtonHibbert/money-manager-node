@@ -50,7 +50,10 @@ let redisClient = redis.createClient(process.env.REDIS_URI);
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+ }));
 
 if (process.env.NODE_ENV === "development" ) {
     app.use(session({
