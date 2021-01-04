@@ -86,14 +86,14 @@ if (process.env.NODE_ENV !== "development" ) {
 
 
 const sessionChecker = (req, res, next) => {
-    console.log(req.session.id);
+    console.log("sessionChecker session id", req.session.id);
+    console.log("sessionChecker user id ", req.session.userId);
     if (req.session.userId) {
         next();
     }
-    req.session.regenerate(async function(err) {
-        res.redirect("/login");
-    })
-    .catch(err => console.log("error with session validation"))
+    if(!req.session.userId) {
+        res.status(400).json("invalid credentials, please log in");
+    }
 }
 
 
