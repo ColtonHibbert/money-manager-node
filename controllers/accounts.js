@@ -1,9 +1,9 @@
 const handleAccounts = (async (req, res, next, postgresDB ) => {
     const userId = req.session.userId;
     console.log("handleAccounts: sessionid ", req.session.id );
-    console.log("hanldeAccounts: userId: ", req.session.userId);
+    console.log("handleAccounts: userId: ", req.session.userId );
 
-    console.log("handleaccounts: mySession ", req.mySession)
+    console.log("handleAccounts: mySession ", req.mySession);
     const accounts = await postgresDB.select("*")
     .from("account")
     .where("user_id", "=", userId)
