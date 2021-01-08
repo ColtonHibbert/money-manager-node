@@ -48,8 +48,22 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
             req.session.householdMemberId = user.household_member_id;
             req.session.householdId = user.household_id;
             req.session.roleId = user.role_id;
+
+            const userResponse = {
+                userId: user.user_id,
+                firstName: user.first_name,
+                lastName: user.last_name,
+                email: user.email,
+                address: user.address,
+                phone: user.phone,
+                about: user.about,
+                joined: user.joined,
+                householdMemberId: user.household_member_id,
+                householdId: user.household_id,
+                roleId: user.role_id
+            }
     
-            return res.send(JSON.stringify(user));
+            return res.send(JSON.stringify(userResponse));
         });
     } 
     if(!verifyPassword) {
