@@ -13,7 +13,7 @@ const handleTransactions = (async (req, res, next, postgresDB ) => {
 
         data.forEach(transaction => {
             let transactionResponse = {
-                id: transaction.transaction_id,
+                transactionId: transaction.transaction_id,
                 amount: transaction.amount,
                 date: transaction.date,
                 memoNote: transaction.memo_note,
