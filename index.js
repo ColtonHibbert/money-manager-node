@@ -101,10 +101,6 @@ app.use(morgan("combined"));
 
 app.use(bodyparser.json());
 
-//app.use(session({secret: "Shh, its a secret!"}));
-
-//app.get('/', function(req, res){ });
-
 app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt ); });
 
 app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB, bcrypt); });
