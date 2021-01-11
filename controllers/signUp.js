@@ -4,7 +4,7 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
     const { email, password, firstName, lastName } = req.body;
 
     if(!email || !password || !firstName || !lastName ) {
-        const missingEmailOrPassword = {
+        const missingEmailOrPasswordOrName = {
             error: "MISSING_EMAIL_OR_PASSWORD_OR_NAME"
         }
         return res.status(400).json(missingEmailOrPasswordOrName);
@@ -20,17 +20,22 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
         return res.status(400).json(invalidPassword);
     }
 
-    const checkEmail = await postgresDB.transaction(async (trx) => {
-        trx.select("email").from("user_").where("email", "=", email)
-        .catch(err => {
-            const checkEmailError = {
-                error: "EMAIL_TAKEN"
+    const checkEmailError = {
+        error: "EMAIL_TAKEN"
+    }
+    const checkEmail = await postgresDB.select("email").from("user_").where("email", "=", email)
+        .then(data => {
+            console.log(email)
+            console.log(data)
+            if(data[0]) {
+               return res.status(400).json(checkEmailError);
             }
-            console.log("checkEmail error", err);
-            res.status(400).json(checkEmailError)
         })
-    })
-
+        .catch(err => {
+            console.log(err, "error in catch, checkEmail")
+            return res.status(400).json(checkEmailError);
+        })
+   
     let user;
     await postgresDB.transaction(async (trx) => {
 
@@ -41,6 +46,7 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
         })
         .returning("*")
         .into("user_")
+        .catch(trx.rollback)
         user = user[0];
         
         await trx.insert({
@@ -56,7 +62,7 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
         const signUpError = {
             error: "SIGN_UP_ERROR"
         }
-        res.status(400).json(signUpError);
+        return res.status(400).json(signUpError);
     })
 
     req.session.regenerate(async function(err) {
@@ -72,7 +78,7 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
                 .catch(trx.rollback)
             })
             .catch( (err) => {
-                res.status(400).json({
+                return res.status(400).json({
                     error: "SIGN_UP_ERROR"
                 });
             })
