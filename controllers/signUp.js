@@ -1,13 +1,13 @@
 
 const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
 
-    const { email, password } = req.body;
+    const { email, password, firstName, lastName } = req.body;
 
-    if(!email || !password) {
+    if(!email || !password || !firstName || !lastName ) {
         const missingEmailOrPassword = {
-            error: "MISSING_EMAIL_OR_PASSWORD"
+            error: "MISSING_EMAIL_OR_PASSWORD_OR_NAME"
         }
-        return res.status(400).json(missingEmailOrPassword);
+        return res.status(400).json(missingEmailOrPasswordOrName);
     }
 
     let hashedPassword;
@@ -22,12 +22,12 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
 
     const checkEmail = await postgresDB.transaction(async (trx) => {
         trx.select("email").from("user_").where("email", "=", email)
-        .then(data => {
-            console.log(data)
-        })
         .catch(err => {
-            
+            const checkEmailError = {
+                error: "EMAIL_TAKEN"
+            }
             console.log("checkEmail error", err);
+            res.status(400).json(checkEmailError)
         })
     })
 
@@ -35,7 +35,9 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
     await postgresDB.transaction(async (trx) => {
 
         user = await trx.insert({
-            email: email
+            email: email,
+            first_name: firstName,
+            last_name: lastName
         })
         .returning("*")
         .into("user_")
@@ -70,7 +72,9 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
                 .catch(trx.rollback)
             })
             .catch( (err) => {
-                res.status(400).json("unable to log in, server error");
+                res.status(400).json({
+                    error: "SIGN_UP_ERROR"
+                });
             })
     
             req.session.userId = user.user_id;
@@ -84,11 +88,23 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
             req.session.householdMemberId = user.household_member_id;
             req.session.householdId = user.household_id;
             req.session.roleId = user.role_id;
+
+            const userResponse = {
+                userId: user.user_id,
+                firstName: user.first_name,
+                lastName: user.last_name,
+                email: user.email,
+                address: user.address,
+                phone: user.phone,
+                about: user.about,
+                joined: user.joined,
+                householdMemberId: user.household_member_id,
+                householdId: user.household_id,
+                roleId: user.role_id
+            }
     
-            return res.send(JSON.stringify(user));
+            return res.send(JSON.stringify(userResponse));
     })
-    
-    return res.json("sign up inserted");
 
 })
 
