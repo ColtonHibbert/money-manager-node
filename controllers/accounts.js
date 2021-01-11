@@ -11,12 +11,12 @@ const handleAccounts = (async (req, res, next, postgresDB ) => {
 
         data.forEach(account => {
             let accountResponse = {
-                accountId: data.account_id,
-                accountName: data.account_name,
-                currentBalance: data.current_balance,
-                lowAlertBalance: data.low_alert_balance,
-                userId: data.user_id,
-                accountTypeId: data.account_type_id
+                accountId: account.account_id,
+                accountName: account.account_name,
+                currentBalance: account.current_balance,
+                lowAlertBalance: account.low_alert_balance,
+                userId: account.user_id,
+                accountTypeId: account.account_type_id
             }
             accountResponseArray.push(accountResponse);
         })
