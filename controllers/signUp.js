@@ -4,15 +4,32 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
     const { email, password } = req.body;
 
     if(!email || !password) {
-        return res.status(400).json("missing email or password");
+        const missingEmailOrPassword = {
+            error: "MISSING_EMAIL_OR_PASSWORD"
+        }
+        return res.status(400).json(missingEmailOrPassword);
     }
 
     let hashedPassword;
     try {
          hashedPassword = bcrypt.hashSync(password, 14);
     } catch(err) {
-        return res.status(400).json("the password is invalid or has too many characters");
+        const invalidPassword = {
+            error: "INVALID_PASSWORD"
+        }
+        return res.status(400).json(invalidPassword);
     }
+
+    const checkEmail = await postgresDB.transaction(async (trx) => {
+        trx.select("email").from("user_").where("email", "=", email)
+        .then(data => {
+            console.log(data)
+        })
+        .catch(err => {
+            
+            console.log("checkEmail error", err);
+        })
+    })
 
     let user;
     await postgresDB.transaction(async (trx) => {
@@ -33,7 +50,12 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
         .catch(trx.rollback)
 
     })
-    .catch(err => res.status(400).json("error with signup"))
+    .catch(err => {
+        const signUpError = {
+            error: "SIGN_UP_ERROR"
+        }
+        res.status(400).json(signUpError);
+    })
 
     req.session.regenerate(async function(err) {
         console.log(req.session.id, "session id log inside signup regen");
