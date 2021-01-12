@@ -42,7 +42,8 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
         user = await trx.insert({
             email: email,
             first_name: firstName,
-            last_name: lastName
+            last_name: lastName,
+            role_id: 1
         })
         .returning("*")
         .into("user_")
