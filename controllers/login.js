@@ -27,12 +27,28 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
     }
 
     const user = await postgresDB.select("*").from("user_").where("email", "=", email)
-    .then(data => data[0])
-    .catch(err => res.status(400).json(invalidEmailOrPassword))
+    .then(data => {
+        if(data[0]) {
+            return data[0];
+        }
+    })
+    .catch(err => res.status(400).json(invalidEmailOrPassword));
+    if(user === undefined) {
+        return res.status(400).json(invalidEmailOrPassword);
+    }
+    console.log("after check user", user);
 
     const storedHashedPassword = await postgresDB.select("password_hash").from("auth").where("user_id", "=", user.user_id)
-    .then(data => data[0].password_hash)
+    .then(data => {
+        if(data[0]) {
+            return data[0].password_hash;
+        }
+    })
     .catch( (err) => res.status(400).json(invalidEmailOrPassword))
+    if(storedHashedPassword === undefined) {
+        return res.status(400).json(invalidEmailOrPassword);
+    }
+    
 
     const verifyPassword = await bcrypt.compareSync(password, storedHashedPassword);
     
@@ -51,7 +67,7 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
                 .catch(trx.rollback)
             })
             .catch( (err) => {
-                res.status(400).json(serverError);
+                return res.status(400).json(serverError);
             })
     
             req.session.userId = user.user_id;
@@ -84,7 +100,7 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
         });
     } 
     if(!verifyPassword) {
-        res.status(400).json(unableToLogin);
+        return res.status(400).json(unableToLogin);
     }
 });
 
