@@ -1,21 +1,38 @@
 
 const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
 
+    //handle Error with invalid email and password
     console.log("handleLogin session.id", req.session.id);
-    console.log("handleLogin userId", req.session.userId)
+    console.log("handleLogin userId", req.session.userId);
+
+    const missingEmailOrPassword = {
+        error: "Missing Email Or Password."
+    }
+
+    const invalidEmailOrPassword = {
+        error: "Invalid Email or Password."
+    }
+
+    const serverError = {
+        error: "Server Error."
+    }
+
+    const unableToLogin = {
+        error: "Unable to login."
+    }
 
     const { email, password } =  req.body;
     if(!email || !password) {
-        return res.status(400).json("unable to login, missing email or password");
+        return res.status(400).json(missingEmailOrPassword);
     }
 
     const user = await postgresDB.select("*").from("user_").where("email", "=", email)
     .then(data => data[0])
-    .catch(err => res.status(400).json("unable to login, issue with username or password"))
+    .catch(err => res.status(400).json(invalidEmailOrPassword))
 
     const storedHashedPassword = await postgresDB.select("password_hash").from("auth").where("user_id", "=", user.user_id)
     .then(data => data[0].password_hash)
-    .catch( (err) => res.status(400).json("unable to login, issue with username or password"))
+    .catch( (err) => res.status(400).json(invalidEmailOrPassword))
 
     const verifyPassword = await bcrypt.compareSync(password, storedHashedPassword);
     
@@ -34,7 +51,7 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
                 .catch(trx.rollback)
             })
             .catch( (err) => {
-                res.status(400).json("unable to log in, server error");
+                res.status(400).json(serverError);
             })
     
             req.session.userId = user.user_id;
@@ -67,7 +84,7 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
         });
     } 
     if(!verifyPassword) {
-        res.status(400).json("unable to login");
+        res.status(400).json(unableToLogin);
     }
 });
 
