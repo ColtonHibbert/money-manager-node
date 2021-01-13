@@ -9,7 +9,7 @@ const config = require("./config/config.js");
 const bcrypt = require("bcryptjs");
 const redis = require("redis");
 const session = require("express-session");
-const csurf = require("csurf");
+const csrf = require("csurf");
 let RedisStore = require("connect-redis")(session);
 
 //won't break if .env is not present, won't overwrite default node_env or other env vars
@@ -97,10 +97,16 @@ const sessionChecker = (req, res, next) => {
     }
 }
 
+app.use(csrf());
 
 app.use(morgan("combined"));
 
 app.use(bodyparser.json());
+
+app.get("/", (req, res, next) => {
+    console.log(req.csrfToken());
+    res.send(JSON.stringify({csrf: req.csrfToken()}));
+})
 
 app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt ); });
 

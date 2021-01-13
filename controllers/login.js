@@ -1,8 +1,9 @@
 
 const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
 
-    console.log("handleLogin session.id, before regenerate: ", req.session.id);
-    console.log("handleLogin userId, before regenerate: ", req.session.userId);
+    console.log("handleLogin, session.id, before regenerate: ", req.session.id);
+    console.log("handleLogin, userId, before regenerate: ", req.session.userId);
+    console.log("handleLogin, req.csrfToken, before regenerate", req.csrfToken())
 
     const missingEmailOrPassword = {
         error: "Missing Email Or Password."
@@ -53,8 +54,10 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
     
     if(verifyPassword) {
         req.session.regenerate(async function (err) {
-            console.log("session id login, after regenerate: ", req.session.id );
-            console.log("user id, login, after regenerate, before adding to session: ", req.session.userId);
+            console.log("handleLogin, session id, after regenerate: ", req.session.id );
+            console.log("handleLogin, user id, after regenerate, before adding to session: ", req.session.userId);
+            console.log("handleLogin, csrfToken(), after regenerate, before adding to session: ", req.csrfToken());
+
             //reset session, prevent session fixation
             await postgresDB.transaction( (trx) => {
                 trx.insert({ 
@@ -81,8 +84,9 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
             req.session.householdId = user.household_id;
             req.session.roleId = user.role_id;
 
-            console.log("user id, login, after regenerate, after adding to session: ", req.session.userId);
-
+            console.log("hanldeLogin, user id, after regenerate, after adding to session: ", req.session.userId);
+            console.log("handleLogin, req.csrfToken, after regenerate, haven't explicitly added to session, should be automatic", req.csrfToken());
+            console.log("hanldeLogin, entire session, after regenerate and adding to session: ", req.session);
 
             const userResponse = {
                 userId: user.user_id,
