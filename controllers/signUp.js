@@ -1,5 +1,7 @@
 
 const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
+    console.log("session id, beginning handleSignUp, before regenerate: ", req.session.id);
+    console.log("user id, handleSignUp before regenerate: ", req.session.userId);
 
     const { email, password, firstName, lastName } = req.body;
 
@@ -66,8 +68,10 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
         return res.status(400).json(signUpError);
     })
 
+    
     req.session.regenerate(async function(err) {
-        console.log(req.session.id, "session id log inside signup regen");
+        console.log("session id,  handleSignUp after regenerate: ", req.session.id);
+        console.log("user id, handleSignUp, after regenerate, before adding to session: ", req.session.userId);
             //reset session, prevent session fixation
             await postgresDB.transaction( (trx) => {
                 trx.insert({ 
@@ -95,6 +99,8 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
             req.session.householdMemberId = user.household_member_id;
             req.session.householdId = user.household_id;
             req.session.roleId = user.role_id;
+
+            console.log("user id, handleSignUp, after regenerate, after adding to session: ", req.session.userId);
 
             const userResponse = {
                 userId: user.user_id,
