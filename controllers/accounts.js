@@ -2,6 +2,8 @@ const handleAccounts = (async (req, res, next, postgresDB ) => {
     const userId = req.session.userId;
     console.log("handleAccounts: sessionid ", req.session.id );
     console.log("handleAccounts: userId: ", req.session.userId );
+    console.log("handleAccounts: req.csrfToken(): ", req.csrfToken());
+    console.log("handleAccounts: entire session: ", req.session);
 
     const accounts = await postgresDB.select("*")
     .from("account")
