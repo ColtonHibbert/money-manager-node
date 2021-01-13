@@ -1,9 +1,8 @@
 
 const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
 
-    //handle Error with invalid email and password
-    console.log("handleLogin session.id", req.session.id);
-    console.log("handleLogin userId", req.session.userId);
+    console.log("handleLogin session.id, before regenerate: ", req.session.id);
+    console.log("handleLogin userId, before regenerate: ", req.session.userId);
 
     const missingEmailOrPassword = {
         error: "Missing Email Or Password."
@@ -53,9 +52,9 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
     const verifyPassword = await bcrypt.compareSync(password, storedHashedPassword);
     
     if(verifyPassword) {
-        console.log(req.session.id, '1st session id log');
         req.session.regenerate(async function (err) {
-            console.log(req.session.id, "session id log inside regen");
+            console.log("session id login, after regenerate: ", req.session.id );
+            console.log("user id, login, after regenerate, before adding to session: ", req.session.userId);
             //reset session, prevent session fixation
             await postgresDB.transaction( (trx) => {
                 trx.insert({ 
@@ -81,6 +80,9 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
             req.session.householdMemberId = user.household_member_id;
             req.session.householdId = user.household_id;
             req.session.roleId = user.role_id;
+
+            console.log("user id, login, after regenerate, after adding to session: ", req.session.userId);
+
 
             const userResponse = {
                 userId: user.user_id,
