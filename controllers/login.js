@@ -99,7 +99,8 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
                 joined: user.joined,
                 householdMemberId: user.household_member_id,
                 householdId: user.household_id,
-                roleId: user.role_id
+                roleId: user.role_id,
+                csrf: req.csrfToken()
             }
     
             return res.send(JSON.stringify(userResponse));

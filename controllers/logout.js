@@ -1,8 +1,7 @@
 const handleLogout = async(req, res, next, postgresDB ) => {
 
-    const deletedSession = await postgresDB.transasction(trx => {
-        return trx.delete("*").from("session").where("user_id", "=", req.userId)
-        .returning("user_id")
+    const deletedSession = await postgresDB.transaction(trx => {
+        return trx("session").returning("user_id").where("user_id", "=", req.session.userId).del()
         .then(trx.commit)
         .catch(trx.rollback)
     })
