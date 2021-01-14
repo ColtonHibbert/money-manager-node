@@ -19,6 +19,7 @@ const { handleSignUp } = require("./controllers/signUp");
 const { handleLogin } = require("./controllers/login.js");
 const { handleAccounts } = require("./controllers/accounts.js");
 const { handleTransactions } = require("./controllers/transactions.js");
+const { handleLoadUser } = require("./controllers/loadUser.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -93,7 +94,7 @@ const sessionChecker = (req, res, next) => {
         next();
     }
     if(!req.session.userId) {
-        res.status(400).json("invalid credentials, please log in");
+        res.status(200).json({error: "No valid session."});
     }
 }
 
@@ -113,6 +114,8 @@ app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresD
 app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB, bcrypt); });
 
 // protected routes
+app.get("/loaduser", sessionChecker, (req, res, next) => { handleLoadUser(req, res, next) });
+
 app.get("/accounts", sessionChecker, (req, res, next) => { handleAccounts(req, res, next, postgresDB )});
 
 app.get("/transactions", sessionChecker, (req, res, next) => { handleTransactions(req, res, next, postgresDB )});
