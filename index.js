@@ -21,6 +21,7 @@ const { handleAccounts } = require("./controllers/accounts.js");
 const { handleTransactions } = require("./controllers/transactions.js");
 const { handleLoadUser } = require("./controllers/loadUser.js");
 const { handleCSRF } = require("./controllers/csrf.js");
+const { handleLogout } = require("./controllers/logout.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -53,6 +54,7 @@ let redisClient = redis.createClient(process.env.REDIS_URI);
 
 const app = express();
 
+// middleware 
 app.use(cors({
     origin: "http://localhost:3000",
     credentials: true
@@ -105,11 +107,14 @@ app.use(morgan("combined"));
 
 app.use(bodyparser.json());
 
+
+
 app.get("/csrf", (req, res, next) => { handleCSRF(req, res, next )} );
 
 app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt ); });
 
 app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB, bcrypt); });
+
 
 // protected routes
 app.get("/loaduser", sessionChecker, (req, res, next) => { handleLoadUser(req, res, next) });
@@ -118,5 +123,7 @@ app.get("/accounts", sessionChecker, (req, res, next) => { handleAccounts(req, r
 
 app.get("/transactions", sessionChecker, (req, res, next) => { handleTransactions(req, res, next, postgresDB )});
 
-app.listen(process.env.PORT  || 3001, console.log(`app is running on port ${process.env.PORT}, or 3001`))
+app.post("/logout", sessionChecker, (req, res, next) => { handleLogout(req, res, next, postgresDB )});
+
+app.listen(process.env.PORT  || 3001, console.log(`app is running on port ${process.env.PORT}, or 3001`));
 
