@@ -20,6 +20,7 @@ const { handleLogin } = require("./controllers/login.js");
 const { handleAccounts } = require("./controllers/accounts.js");
 const { handleTransactions } = require("./controllers/transactions.js");
 const { handleLoadUser } = require("./controllers/loadUser.js");
+const { handleCSRF } = require("./controllers/csrf.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -97,17 +98,14 @@ const sessionChecker = (req, res, next) => {
         res.status(200).json({error: "No valid session."});
     }
 }
-
+ 
 app.use(csrf());
 
 app.use(morgan("combined"));
 
 app.use(bodyparser.json());
 
-app.get("/", (req, res, next) => {
-    console.log(req.csrfToken());
-    res.send(JSON.stringify({csrf: req.csrfToken()}));
-})
+app.get("/csrf", (req, res, next) => { handleCSRF(req, res, next )} );
 
 app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt ); });
 

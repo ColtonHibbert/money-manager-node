@@ -22,7 +22,7 @@ const handleAccounts = (async (req, res, next, postgresDB ) => {
             }
             accountResponseArray.push(accountResponse);
         })
-        res.send(JSON.stringify(accountResponseArray));
+        return res.send(JSON.stringify(accountResponseArray));
     })
     .catch(err => console.log("error with getting accounts"))
 })
