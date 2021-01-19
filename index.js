@@ -25,7 +25,7 @@ const { handleLogout } = require("./controllers/logout.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
-        console.log("development")
+        console.log("development");
         return(
             knex({
                 client: "pg",
@@ -34,7 +34,7 @@ function DBEnvironment() {
         )
     }
     if (process.env.NODE_ENV === "production") {
-        console.log("production")
+        console.log("production");
         return (
             knex({
                 client: "pg",
@@ -60,6 +60,8 @@ app.use(cors({
     credentials: true
  }));
 
+app.use(bodyparser.json());
+
 if (process.env.NODE_ENV === "development" ) {
     app.use(session({
         name: "mySession",
@@ -69,7 +71,7 @@ if (process.env.NODE_ENV === "development" ) {
         cookie: {
             httpOnly: true,
             secure: false,
-            maxAge: 60000 * 60 * 24
+            maxAge: 60000 * 60 * 24 * 30
         },
         store: new RedisStore({ client: redisClient })
     }))
@@ -104,9 +106,6 @@ const sessionChecker = (req, res, next) => {
 app.use(csrf());
 
 app.use(morgan("combined"));
-
-app.use(bodyparser.json());
-
 
 
 app.get("/csrf", (req, res, next) => { handleCSRF(req, res, next )} );
