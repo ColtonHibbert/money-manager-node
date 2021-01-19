@@ -3,7 +3,7 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
 
     console.log("handleLogin, session.id, before regenerate: ", req.session.id);
     console.log("handleLogin, userId, before regenerate: ", req.session.userId);
-    console.log("handleLogin, req.csrfToken, before regenerate", req.csrfToken())
+    console.log("handleLogin, req.csrfToken, before regenerate", req.csrfToken());
 
     const missingEmailOrPassword = {
         error: "Missing Email Or Password."
@@ -21,7 +21,7 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
         error: "Unable to login."
     }
 
-    const { email, password } =  req.body;
+    const { email, password, rememberMe } =  req.body;
     if(!email || !password) {
         return res.status(400).json(missingEmailOrPassword);
     }
@@ -57,6 +57,10 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
             console.log("handleLogin, session id, after regenerate: ", req.session.id );
             console.log("handleLogin, user id, after regenerate, before adding to session: ", req.session.userId);
             console.log("handleLogin, csrfToken(), after regenerate, before adding to session: ", req.csrfToken());
+            console.log("handleLogin, rememberMe, after regenerate, before adding to session: ", rememberMe);
+            if(rememberMe === true) {
+                req.session.cookie.expires = false;
+            }
 
             //reset session, prevent session fixation
             await postgresDB.transaction( (trx) => {

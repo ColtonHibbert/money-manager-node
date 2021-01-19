@@ -4,7 +4,7 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
     console.log("handleSignUp, user id, before regenerate: ", req.session.userId);
     console.log("handleSignUp, req.csrfToken(), before regenerate: ", req.csrfToken());
 
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, rememberMe } = req.body;
 
     if(!email || !password || !firstName || !lastName ) {
         const missingEmailOrPasswordOrName = {
@@ -74,7 +74,10 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
         console.log("handleSignUp, session id, after regenerate: ", req.session.id);
         console.log("handleSignUp, user id, after regenerate, before adding to session: ", req.session.userId);
         console.log("handleSignUp, req.csrfToken(), after regenerate, before adding to session, should be automatic: ", req.csrfToken());
-
+        console.log("handleLogin, rememberMe, after regenerate, before adding to session: ", rememberMe);
+            if(rememberMe === true) {
+                req.session.cookie.expires = false;
+            }
             //reset session, prevent session fixation
             await postgresDB.transaction( (trx) => {
                 trx.insert({ 
