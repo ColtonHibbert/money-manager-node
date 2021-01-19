@@ -75,7 +75,7 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
         console.log("handleSignUp, user id, after regenerate, before adding to session: ", req.session.userId);
         console.log("handleSignUp, req.csrfToken(), after regenerate, before adding to session, should be automatic: ", req.csrfToken());
         console.log("handleLogin, rememberMe, after regenerate, before adding to session: ", rememberMe);
-            if(rememberMe === true) {
+            if(rememberMe === false) {
                 req.session.cookie.expires = false;
             }
             //reset session, prevent session fixation

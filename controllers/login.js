@@ -58,7 +58,7 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
             console.log("handleLogin, user id, after regenerate, before adding to session: ", req.session.userId);
             console.log("handleLogin, csrfToken(), after regenerate, before adding to session: ", req.csrfToken());
             console.log("handleLogin, rememberMe, after regenerate, before adding to session: ", rememberMe);
-            if(rememberMe === true) {
+            if(rememberMe === false) {
                 req.session.cookie.expires = false;
             }
 
@@ -90,7 +90,7 @@ const handleLogin = (async (req, res, next, postgresDB, bcrypt ) => {
 
             console.log("hanldeLogin, user id, after regenerate, after adding to session: ", req.session.userId);
             console.log("handleLogin, req.csrfToken, after regenerate, haven't explicitly added to session, should be automatic", req.csrfToken());
-            console.log("hanldeLogin, entire session, after regenerate and adding to session: ", req.session);
+            console.log("handleLogin, entire session, after regenerate and adding to session: ", req.session);
 
             const userResponse = {
                 userId: user.user_id,
