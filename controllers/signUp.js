@@ -8,7 +8,7 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
 
     if(!email || !password || !firstName || !lastName ) {
         const missingEmailOrPasswordOrName = {
-            error: "MISSING_EMAIL_OR_PASSWORD_OR_NAME"
+            error: "Please fill in missing fields."
         }
         return res.status(400).json(missingEmailOrPasswordOrName);
     }
@@ -18,13 +18,13 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
          hashedPassword = bcrypt.hashSync(password, 14);
     } catch(err) {
         const invalidPassword = {
-            error: "INVALID_PASSWORD"
+            error: "Invalid password."
         }
         return res.status(400).json(invalidPassword);
     }
 
     const checkEmailError = {
-        error: "EMAIL_TAKEN"
+        error: "Email is already in use."
     }
     const checkEmail = await postgresDB.select("email").from("user_").where("email", "=", email)
         .then(data => {
@@ -64,7 +64,7 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
     })
     .catch(err => {
         const signUpError = {
-            error: "SIGN_UP_ERROR"
+            error: "Error signing up. Please try again."
         }
         return res.status(400).json(signUpError);
     })
@@ -75,7 +75,7 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
         console.log("handleSignUp, user id, after regenerate, before adding to session: ", req.session.userId);
         console.log("handleSignUp, req.csrfToken(), after regenerate, before adding to session, should be automatic: ", req.csrfToken());
         console.log("handleLogin, rememberMe, after regenerate, before adding to session: ", rememberMe);
-            if(rememberMe === true) {
+            if(rememberMe === false) {
                 req.session.cookie.expires = false;
             }
             //reset session, prevent session fixation

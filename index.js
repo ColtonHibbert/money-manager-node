@@ -99,13 +99,21 @@ const sessionChecker = (req, res, next) => {
         next();
     }
     if(!req.session.userId) {
-        res.status(200).json({error: "No valid session."});
+        return res.status(200).json({error: "No valid session."});
     }
 }
  
 app.use(csrf());
 
+app.use(function (err, req, res, next) {
+    if (err.code !== 'EBADCSRFTOKEN') return next(err)
+  
+    res.status(403);
+    res.send({ error: "Invalid token, please refresh browser and try again." })
+  })
+
 app.use(morgan("combined"));
+//end of middleware
 
 
 app.get("/csrf", (req, res, next) => { handleCSRF(req, res, next )} );
