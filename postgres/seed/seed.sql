@@ -114,7 +114,7 @@ INSERT INTO user_(first_name, last_name, email, address, phone, about, joined, r
 );
 
 INSERT INTO auth(password_hash, user_id, role_id) VALUES(
-    '$2a$14$Cqmhau6p.TBw9sQrwdBEYesDppVYshif7DSEs.LtUVUoaRe6RRl8G',
+    '$2a$14$3965TlMgaVkP/4bhNgRKz.bnHDBdBDjtmsKxKNSLU3g5vF9t9llVy',
     1,
     1
 );
