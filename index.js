@@ -6,6 +6,7 @@ const fetch = require("node-fetch");
 const knex = require("knex");
 const morgan = require("morgan");
 const config = require("./config/config.js");
+const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const redis = require("redis");
 const session = require("express-session");
@@ -125,8 +126,9 @@ app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresD
 
 app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB, bcrypt); });
 
-app.post("/forgotpassword", (req, res, next) => { handleForgotPassword(req, res, next, postgresDB, nodemailer ) })
+app.post("/forgotpassword", (req, res, next) => { handleForgotPassword(req, res, next, postgresDB, nodemailer, crypto ) });
 
+app.get("/passwordreset/:token", (req, res, next) => { handlePasswordReset(req, res, next)});
 
 // protected routes
 app.get("/loaduser", sessionChecker, (req, res, next) => { handleLoadUser(req, res, next) });
