@@ -1,5 +1,5 @@
 
-const handleForgotPassword = (async (req, res, next, postgresDB, nodemailer ) => {
+const handleForgotPassword = (async (req, res, next, postgresDB, nodemailer, crypto ) => {
     console.log("handleForgotPassword, email", req.body.email);
     const { email } = req.body;
 
@@ -25,10 +25,12 @@ const handleForgotPassword = (async (req, res, next, postgresDB, nodemailer ) =>
 
         const token = crypto.randomBytes(20).toString("hex");
         
+        const time = new Date(Date.now() + (60000 * 30)).toISOString();
+        
         await postgresDB.transaction(trx => {
             trx.insert({
                 reset_token: token,
-                token_expires: Date.now() + (60000 * 30)
+                token_expires: time
             })
             .into("auth")
             .where("user_id", "=", DBUser.user_id)

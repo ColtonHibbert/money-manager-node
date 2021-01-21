@@ -105,7 +105,7 @@ BEGIN TRANSACTION;
 INSERT INTO user_(first_name, last_name, email, address, phone, about, joined, role_id) VALUES (
     'Steve',
     'Jobs',
-    'stevejobs@moneymanagerexample.com',
+    'codingwithcolton@gmail.com',
     '123 State Street, Salt Lake City, UT 84123',
     '801-555-7777',
     'I am really excited to budget!',
