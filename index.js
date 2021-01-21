@@ -17,6 +17,7 @@ require("dotenv").config();
 
 const { handleSignUp } = require("./controllers/signUp");
 const { handleLogin } = require("./controllers/login.js");
+const { handleForgotPassword } = require("./controllers/forgotPassword.js");
 const { handleAccounts } = require("./controllers/accounts.js");
 const { handleTransactions } = require("./controllers/transactions.js");
 const { handleLoadUser } = require("./controllers/loadUser.js");
@@ -121,6 +122,8 @@ app.get("/csrf", (req, res, next) => { handleCSRF(req, res, next )} );
 app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt ); });
 
 app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB, bcrypt); });
+
+app.post("/forgotpassword", (req, res, next) => { handleForgotPassword(req, res, next, postgresDB ) })
 
 
 // protected routes
