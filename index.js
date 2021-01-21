@@ -10,6 +10,7 @@ const bcrypt = require("bcryptjs");
 const redis = require("redis");
 const session = require("express-session");
 const csrf = require("csurf");
+const nodemailer = require("nodemailer");
 let RedisStore = require("connect-redis")(session);
 
 //won't break if .env is not present, won't overwrite default node_env or other env vars
@@ -123,7 +124,7 @@ app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresD
 
 app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB, bcrypt); });
 
-app.post("/forgotpassword", (req, res, next) => { handleForgotPassword(req, res, next, postgresDB ) })
+app.post("/forgotpassword", (req, res, next) => { handleForgotPassword(req, res, next, postgresDB, nodemailer ) })
 
 
 // protected routes
