@@ -11,6 +11,8 @@ services:
             NODE_ENV: "${NODE_ENV}"
             REDIS_URI: "${REDIS_URI_DOCKER}"
             SESSION_SECRET: ${SESSION_SECRET_DOCKER}
+            RESET_EMAIL: ${RESET_EMAIL_DOCKER}
+            RESET_PASSWORD: ${RESET_PASSWORD_DOCKER}
         ports:
             -   "3001:3001"
         volumes:
