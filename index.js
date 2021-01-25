@@ -128,7 +128,7 @@ app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB,
 
 app.post("/forgotpassword", (req, res, next) => { handleForgotPassword(req, res, next, postgresDB, nodemailer, crypto ) });
 
-app.get("/passwordreset/:token", (req, res, next) => { handlePasswordReset(req, res, next, postgresDB, bcrypt, nodemailer )});
+app.post("/passwordreset", (req, res, next) => { handlePasswordReset(req, res, next, postgresDB, bcrypt, nodemailer )});
 
 // protected routes
 app.get("/loaduser", sessionChecker, (req, res, next) => { handleLoadUser(req, res, next) });

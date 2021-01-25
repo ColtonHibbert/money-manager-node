@@ -28,12 +28,12 @@ const handleForgotPassword = (async (req, res, next, postgresDB, nodemailer, cry
         const time = new Date(Date.now() + (60000 * 30)).toISOString();
         
         await postgresDB.transaction(trx => {
-            trx.insert({
+            trx("auth")
+            .where("user_id", "=", DBUser.user_id)
+            .update({
                 reset_token: token,
                 token_expires: time
             })
-            .into("auth")
-            .where("user_id", "=", DBUser.user_id)
             .then(trx.commit)
             .catch(trx.rollback)
         })
