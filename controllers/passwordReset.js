@@ -37,8 +37,8 @@ const handlePasswordReset =(async (req, res, next, postgresDB, bcrypt, nodemaile
         return res.status(400).json({error: "Your password must be less than 72 characters."});
     }
 
-    const changeAuthPasswordAndExpireToken = await postgresDB.transaction(trx => {
-        trx("auth").where("auth_id", "=", auth.auth_id).update({ reset_token: null, token_expires: null, hashed_password: hashedPassword })
+    await postgresDB.transaction(trx => {
+        trx("auth").where("auth_id", "=", auth.auth_id).update({ reset_token: null, token_expires: null, password_hash: hashedPassword })
         .then(trx.commit)
         .catch(trx.rollback)
     })
