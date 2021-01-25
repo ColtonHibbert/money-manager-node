@@ -12,6 +12,7 @@ const redis = require("redis");
 const session = require("express-session");
 const csrf = require("csurf");
 const nodemailer = require("nodemailer");
+const helmet = require("helmet");
 let RedisStore = require("connect-redis")(session);
 
 //won't break if .env is not present, won't overwrite default node_env or other env vars
@@ -57,6 +58,8 @@ postgresDB.select("*").from("user_").then(data => console.log(data));
 let redisClient = redis.createClient(process.env.REDIS_URI);
 
 const app = express();
+
+app.use(helmet());
 
 // middleware 
 app.use(cors({
