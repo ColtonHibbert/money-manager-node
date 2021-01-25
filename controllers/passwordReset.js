@@ -12,6 +12,7 @@ const handlePasswordReset =(async (req, res, next, postgresDB, bcrypt, nodemaile
 
     const auth = await postgresDB.select("auth_id", "user_id", "reset_token","token_expires").from("auth").where("reset_token", "=", token)
     .then(data => {
+        console.log("password reset auth: ", data)
         if(data[0]) {
             return data[0];
         }
