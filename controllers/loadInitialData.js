@@ -17,6 +17,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
 
     const accountsInDB = await postgresDB.select("*").from("account").where("user_id", "=", user.userId)
     .then(data => {
+        console.log("loadInitialData, accountsInDB: ", data);
         return data
     })
     .catch(err => res.status(400).json({error: "There was an error loading your data."}))
@@ -38,12 +39,12 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     }
     const accounts = formatAccounts(accountsInDB);
 
-    const initialDataResponse = {
+    const initialData = {
         user: user,
         accounts: accounts
     }
 
-    return res.send(JSON.stringify({initialDataResponse}));
+    return res.send(JSON.stringify({initialData}));
 
 })
 
