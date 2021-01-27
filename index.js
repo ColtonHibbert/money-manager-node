@@ -27,6 +27,7 @@ const { handleLoadUser } = require("./controllers/loadUser.js");
 const { handleCSRF } = require("./controllers/csrf.js");
 const { handleLogout } = require("./controllers/logout.js");
 const { handlePasswordReset } = require("./controllers/passwordReset.js");
+const { handleLoadInitialData } = require("./controllers/loadInitialData.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
