@@ -21,13 +21,29 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     })
     .catch(err => res.status(400).json({error: "There was an error loading your data."}))
 
-    const accounts = (accountsInDB) => {
+    const formatAccounts = (accountsInDB) => {
         let accountsArray = [];
-        for(i = 0; i < accountsInDB.length; i++) {
-
+        for(let i = 0; i < accountsInDB.length; i++) {
+            let account = {
+                accountId: accountsInDB[i].account_id,
+                accountName: accountsInDB[i].account_name,
+                currentBalance: accountsInDB[i].current_balance,
+                lowAlertBalance: accountsInDB[i].low_alert_balance,
+                userId: accountsInDB[i].user_id,
+                accountTypeId: accountsInDB[i].account_type_id
+            }
+            accountsArray.push(account);
         }
+        return accountsArray;
     }
-    accounts(accountsInDB);
+    const accounts = formatAccounts(accountsInDB);
+
+    const initialDataResponse = {
+        user: user,
+        accounts: accounts
+    }
+
+    return res.send(JSON.stringify({initialDataResponse}));
 
 })
 
