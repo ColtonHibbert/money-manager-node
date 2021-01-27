@@ -122,7 +122,6 @@ app.use(function (err, req, res, next) {
 app.use(morgan("combined"));
 //end of middleware
 
-
 app.get("/csrf", (req, res, next) => { handleCSRF(req, res, next )} );
 
 app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt ); });
@@ -134,6 +133,8 @@ app.post("/forgotpassword", (req, res, next) => { handleForgotPassword(req, res,
 app.post("/passwordreset", (req, res, next) => { handlePasswordReset(req, res, next, postgresDB, bcrypt, nodemailer )});
 
 // protected routes
+app.get("/loadinitialdata", sessionChecker, (req, res, next) => {handleLoadInitialData(req, res, next, postgresDB )})
+
 app.get("/loaduser", sessionChecker, (req, res, next) => { handleLoadUser(req, res, next) });
 
 app.get("/accounts", sessionChecker, (req, res, next) => { handleAccounts(req, res, next, postgresDB )});
