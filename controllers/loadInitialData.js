@@ -15,8 +15,19 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         csrf: req.csrfToken()
     }
 
-    const accounts = await postgresDB.select("")
+    const accountsInDB = await postgresDB.select("*").from("account").where("user_id", "=", user.userId)
+    .then(data => {
+        return data
+    })
+    .catch(err => res.status(400).json({error: "There was an error loading your data."}))
 
+    const accounts = (accountsInDB) => {
+        let accountsArray = [];
+        for(i = 0; i < accountsInDB.length; i++) {
+
+        }
+    }
+    accounts(accountsInDB);
 
 })
 
