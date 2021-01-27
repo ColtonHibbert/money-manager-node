@@ -39,10 +39,10 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
             return res.status(400).json(checkEmailError);
         })
    
-    let user;
+    let userDB;
     await postgresDB.transaction(async (trx) => {
 
-        user = await trx.insert({
+        userDB = await trx.insert({
             email: email,
             first_name: firstName,
             last_name: lastName,
@@ -51,11 +51,11 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
         .returning("*")
         .into("user_")
         .catch(trx.rollback)
-        user = user[0];
+        userDB = userDB[0];
         
         await trx.insert({
             password_hash: hashedPassword,
-            user_id: user.user_id
+            user_id: userDB.user_id
         })
         .into("auth")
         .then(trx.commit)
@@ -82,7 +82,7 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
             await postgresDB.transaction( (trx) => {
                 trx.insert({ 
                     session: req.session.id,
-                    user_id: user.user_id
+                    user_id: userDB.user_id
                 })
                 .into("session")
                 .then(trx.commit)
@@ -94,38 +94,68 @@ const handleSignUp = (async (req, res, next, postgresDB, bcrypt) => {
                 });
             })
     
-            req.session.userId = user.user_id;
-            req.session.firstName = user.first_name;
-            req.session.lastName = user.last_name;
-            req.session.email = user.email;
-            req.session.address = user.address;
-            req.session.phone = user.phone;
-            req.session.about = user.about;
-            req.session.joined = user.joined;
-            req.session.householdMemberId = user.household_member_id;
-            req.session.householdId = user.household_id;
-            req.session.roleId = user.role_id;
+            req.session.userId = userDB.user_id;
+            req.session.firstName = userDB.first_name;
+            req.session.lastName = userDB.last_name;
+            req.session.email = userDB.email;
+            req.session.address = userDB.address;
+            req.session.phone = userDB.phone;
+            req.session.about = userDB.about;
+            req.session.joined = userDB.joined;
+            req.session.householdMemberId = userDB.household_member_id;
+            req.session.householdId = userDB.household_id;
+            req.session.roleId = userDB.role_id;
 
             console.log("handleSignUp, user id, after regenerate, after adding to session: ", req.session.userId);
             console.log("handleSignUp, req.csrfToken(), after regenerate, haven't explicitly added to session, should be automatic: ", req.csrfToken());
             console.log("handleSignUp, entire session, after regenerate and adding to session: ", req.session)
 
-            const userResponse = {
-                userId: user.user_id,
-                firstName: user.first_name,
-                lastName: user.last_name,
-                email: user.email,
-                address: user.address,
-                phone: user.phone,
-                about: user.about,
-                joined: user.joined,
-                householdMemberId: user.household_member_id,
-                householdId: user.household_id,
-                roleId: user.role_id,
+            const user = {
+                userId: userDB.user_id,
+                firstName: userDB.first_name,
+                lastName: userDB.last_name,
+                email: userDB.email,
+                address: userDB.address,
+                phone: userDB.phone,
+                about: userDB.about,
+                joined: userDB.joined,
+                householdMemberId: userDB.household_member_id,
+                householdId: userDB.household_id,
+                roleId: userDB.role_id,
                 csrf: req.csrfToken()
             }
+
+            const accountsInDB = await postgresDB.select("*").from("account").where("user_id", "=", user.userId)
+            .then(data => {
+                console.log("loadInitialData, accountsInDB: ", data);
+                return data
+            })
+            .catch(err => res.status(400).json({error: "There was an error loading your data."}))
+
+            const formatAccounts = (accountsInDB) => {
+                let accountsArray = [];
+                for(let i = 0; i < accountsInDB.length; i++) {
+                    let account = {
+                        accountId: accountsInDB[i].account_id,
+                        accountName: accountsInDB[i].account_name,
+                        currentBalance: accountsInDB[i].current_balance,
+                        lowAlertBalance: accountsInDB[i].low_alert_balance,
+                        userId: accountsInDB[i].user_id,
+                        accountTypeId: accountsInDB[i].account_type_id
+                    }
+                    accountsArray.push(account);
+                }
+                return accountsArray;
+            }
+            const accounts = formatAccounts(accountsInDB);
+
+            const initialData = {
+                user: user,
+                accounts: accounts
+            }
+
+            return res.send(JSON.stringify({initialData}));
     
-            return res.send(JSON.stringify(userResponse));
     })
 
 })
