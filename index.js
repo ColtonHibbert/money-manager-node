@@ -28,6 +28,7 @@ const { handleCSRF } = require("./controllers/csrf.js");
 const { handleLogout } = require("./controllers/logout.js");
 const { handlePasswordReset } = require("./controllers/passwordReset.js");
 const { handleLoadInitialData } = require("./controllers/loadInitialData.js");
+const { handleProfileEdit }  = require("./controllers/profileEdit.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -134,9 +135,11 @@ app.post("/forgotpassword", (req, res, next) => { handleForgotPassword(req, res,
 app.post("/passwordreset", (req, res, next) => { handlePasswordReset(req, res, next, postgresDB, bcrypt, nodemailer )});
 
 // protected routes
-app.get("/loadinitialdata", sessionChecker, (req, res, next) => {handleLoadInitialData(req, res, next, postgresDB )})
+app.get("/loadinitialdata", sessionChecker, (req, res, next) => {handleLoadInitialData(req, res, next, postgresDB )});
 
 app.get("/loaduser", sessionChecker, (req, res, next) => { handleLoadUser(req, res, next) });
+
+app.post("/profileedit", sessionChecker, (req,res,next) => { handleProfileEdit(req, res, next, postgresDB )});
 
 app.get("/accounts", sessionChecker, (req, res, next) => { handleAccounts(req, res, next, postgresDB )});
 
