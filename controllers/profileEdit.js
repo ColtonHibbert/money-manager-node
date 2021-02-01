@@ -4,7 +4,7 @@ const handleProfileEdit = (async (req, res, next, postgresDB) => {
 
     console.log("handleProfileEdit, firstName: ", firstName, req.session.userId)
     
-    const updatedUser = await postgresDB.transaction(trx => {
+    let updatedUser = await postgresDB.transaction(trx => {
         return (trx("user_")
         .where("user_id", "=", req.session.userId)
         .returning(["first_name", "last_name", "address", "phone", "about"])
@@ -27,7 +27,13 @@ const handleProfileEdit = (async (req, res, next, postgresDB) => {
     if(updatedUser === undefined) {
         return res.status(400).json({ error: "There was an error updating your profile."});
     }
+    updatedUser = updatedUser[0];
 
+    req.session.firstName = updatedUser.first_name;
+    req.session.lastName = updatedUser.last_name;
+    req.session.address = updatedUser.address;
+    req.session.phone = updatedUser.phone;
+    req.session.about = updatedUser.about;
 
     const user = {
         firstName: updatedUser.first_name,
@@ -37,7 +43,9 @@ const handleProfileEdit = (async (req, res, next, postgresDB) => {
         about: updatedUser.about,
     }
 
-    return res.send(JSON.stringify(user));
+    console.log("handleProfileEdit, user: ", user)
+
+    return res.send(JSON.stringify({user}));
 
 })
 
