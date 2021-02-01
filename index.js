@@ -29,6 +29,7 @@ const { handleLogout } = require("./controllers/logout.js");
 const { handlePasswordReset } = require("./controllers/passwordReset.js");
 const { handleLoadInitialData } = require("./controllers/loadInitialData.js");
 const { handleProfileEdit }  = require("./controllers/profileEdit.js");
+const { handleEmailEdit } = require("./controllers/emailEdit.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
