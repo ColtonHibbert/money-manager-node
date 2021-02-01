@@ -1,18 +1,27 @@
 
 const handleProfileEdit = (async (req, res, next, postgresDB) => {
     const { firstName, lastName, address, phone ,about } = req.body;
+
+    console.log("handleProfileEdit, firstName: ", firstName, req.session.userId)
     
     const updatedUser = await postgresDB.transaction(trx => {
-        return trx("user_").where("user_id", "=", req.userId).returning("first_name", "last_name", "address", "phone", "about")
+        return (trx("user_")
+        .where("user_id", "=", req.session.userId)
+        .returning(["first_name", "last_name", "address", "phone", "about"])
         .update({
             first_name:firstName,
             last_name:lastName,
             address:address,
             phone:phone,
             about:about
-        })
+        }
+        )
         .then(trx.commit)
         .catch(trx.rollback)
+        )
+    })
+    .catch(err => {
+        console.log("Error in updated user");
     })
     console.log("handleProfileEdit, updatedUser: ",updatedUser);
     if(updatedUser === undefined) {
