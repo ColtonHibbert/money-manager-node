@@ -30,6 +30,7 @@ const { handlePasswordReset } = require("./controllers/passwordReset.js");
 const { handleLoadInitialData } = require("./controllers/loadInitialData.js");
 const { handleProfileEdit }  = require("./controllers/profileEdit.js");
 const { handleEmailEdit } = require("./controllers/emailEdit.js");
+const { handlePasswordEdit } = require("./controllers/passwordEdit.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -141,6 +142,10 @@ app.get("/loadinitialdata", sessionChecker, (req, res, next) => {handleLoadIniti
 app.get("/loaduser", sessionChecker, (req, res, next) => { handleLoadUser(req, res, next) });
 
 app.post("/profileedit", sessionChecker, (req,res,next) => { handleProfileEdit(req, res, next, postgresDB )});
+
+app.post("/emailedit", sessionChecker, (req, res, next) => { handleEmailEdit(req, res, next ,postgresDB)});
+
+app.post("/passwordedit", sessionChecker, (req, res, next) => { handlePasswordEdit(req, res, next, postgresDB, bcrypt)});
 
 app.get("/accounts", sessionChecker, (req, res, next) => { handleAccounts(req, res, next, postgresDB )});
 
