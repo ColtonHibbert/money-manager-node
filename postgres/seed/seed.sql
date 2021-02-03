@@ -140,6 +140,34 @@ INSERT INTO account(account_name, current_balance, low_alert_balance, user_id, a
     -5000.00,
     1,
     3
+),
+(
+    'US Bank', 
+    7000.00, 
+    1000.00,
+    1,
+    1
+),
+(
+    'Midwest Bank',
+    25000.00,
+    5000.00,
+    1,
+    2
+),
+(
+    'America Credit Union',
+    15000.00,
+    5000.00,
+    1,
+    2
+),
+(
+    'Discover Credit Card',
+    -3400.00,
+    -5000.00,
+    1,
+    3
 );
 
 INSERT INTO transaction_(
