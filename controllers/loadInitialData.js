@@ -49,25 +49,47 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     const transactionsInDB = await postgresDB.select("*").from("transaction_").where("user_id", "=", req.session.userId)
     .catch(err => {
         console.log("loadInitialData: error with getting transactions");
-        return res.status(400).json({error: "There was an error loading your data."})
+        return res.status(400).json({error: "There was an error loading your data."});
     })
 
     const categoryFilter = () => {
-
-        const existingCategories = [];
+        const existingCategoryIds = [];
 
         transactionsInDB.map(transaction => {
-            
+            if(!existingCategoryIds[transaction.category_id]) {
+                existingCategoryIds.push(transaction.category_id);
+            }
         })
+        console.log("loadInitialData, existingCategoryIds: ",existingCategoryIds);
+        return existingCategoryIds;
     }
 
-    const categoryNames = await postgresDB.select("*").from("category").where("")
+    const categoryItemFilter = () => {
+        const existingCategoryItemIds = []; 
 
+        transactionsInDB.map(transaction => {
+            if(!existingCategoryItemIds[transaction.category_item_id]) {
+                existingCategoryItemIds.push(transaction.category_item_id);
+            }
+        })
+        console.log("loadInitialData, existingCategoryItemIds: ", existingCategoryItemIds);
+        return existingCategoryItemIds;
+    }
 
-    //one call category, one call items 
-    //make an object from transactions, for category, be a filter, grab each unique category, make an array, 
-    //then when we make one call to category, we do check for only those categories, pull them out,
-    //repeat same process for item
+    const categoryNames = await postgresDB.select("*").from("category").whereIn("category_id", "=", categoryFilter)
+    .catch(err => {
+        console.log("loadInitialData, categoryNames error");
+        return res.status(400).json({error: "There was an error loading your data."});
+    })
+    console.log("loadInitialData, categoryNames: ", categoryNames);
+
+    const categoryItemNames = await postgresDB.select("*").from("category_item").whereIn("category_item_id", "=", categoryItemFilter)
+    .catch(err => {
+        console.log("loadInitialData, categoryItemNames error");
+        return res.status(400).json({error: "There was an error loading your data."});
+    })
+    console.log("loadInitialData, categoryItemNames: ", categoryItemNames);
+
     //then we build the transactions per account, we add the correct names from category and item
 
     const initialData = {
