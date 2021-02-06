@@ -90,7 +90,38 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     })
     console.log("loadInitialData, categoryItemNames: ", categoryItemNames);
 
-    //then we build the transactions per account, we add the correct names from category and item
+    //formatTransactions, then we build the transactions per account
+
+
+    // if 
+    
+    const formatTransactions = () => {
+
+        let transactionsArray = [];
+
+        transactionsInDB.map(transaction => {
+            const categoryName = categoryNames[transaction.category_id].category_name;
+
+            const updatedTransaction = {
+                transactionId: transaction_id,
+                amount: amount,
+                date: date, 
+                memoNote: memo_note,
+                categoryId: category_id,
+                categoryName: categoryName,
+            };
+            transactionsArray.push(updatedTransaction);
+        })
+    }
+
+    const formatIndividualAccounts = () => {
+        transactionsInDB.map(transaction => {
+            if(individualAccounts.accounts.accountId === transaction.account_id) {
+
+            }
+        })
+        // of of O of n, can do map through transactions, if account id matches, push to individualAccount of that Id,
+    }
 
     const initialData = {
         user: user,
