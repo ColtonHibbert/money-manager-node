@@ -76,6 +76,10 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         return existingCategoryItemIds;
     }
 
+    //transactions should? belong to a specific personal budget category, and personal budget_items to a personal category
+    // redo transactions table remove plain category and items, add personal category and items, and also household category and items, they can be null for only personal accounts
+    // redo constraints
+
     const categoryNames = await postgresDB.select("*").from("category").whereIn("category_id", "=", categoryFilter)
     .catch(err => {
         console.log("loadInitialData, categoryNames error");
@@ -93,7 +97,11 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     //formatTransactions, then we build the transactions per account
 
 
-    // if 
+    /*
+    transactionsInDB.map(transaction => {
+        transaction.category_id === categoryNames[memoizeCategoryId]
+    })
+    */
     
     const formatTransactions = () => {
 
