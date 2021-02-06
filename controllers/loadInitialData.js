@@ -41,8 +41,34 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     const accounts = formatAccounts(accountsInDB);
 
     const individualAccounts = [
-
+        {
+            accounts: accounts
+        }
     ]
+
+    const transactionsInDB = await postgresDB.select("*").from("transaction_").where("user_id", "=", req.session.userId)
+    .catch(err => {
+        console.log("loadInitialData: error with getting transactions");
+        return res.status(400).json({error: "There was an error loading your data."})
+    })
+
+    const categoryFilter = () => {
+
+        const existingCategories = [];
+
+        transactionsInDB.map(transaction => {
+            
+        })
+    }
+
+    const categoryNames = await postgresDB.select("*").from("category").where("")
+
+
+    //one call category, one call items 
+    //make an object from transactions, for category, be a filter, grab each unique category, make an array, 
+    //then when we make one call to category, we do check for only those categories, pull them out,
+    //repeat same process for item
+    //then we build the transactions per account, we add the correct names from category and item
 
     const initialData = {
         user: user,
