@@ -139,6 +139,12 @@ app.post("/passwordreset", (req, res, next) => { handlePasswordReset(req, res, n
 // protected routes
 app.get("/loadinitialdata", sessionChecker, (req, res, next) => {handleLoadInitialData(req, res, next, postgresDB )});
 
+//app.get(/loadinitialownerormemberdata, sessionChecker, )
+
+// app.post("/editindividualaccount", sessionChecker, )
+
+// app.post("/editindividualtransaction", sessionChecker, )
+
 app.get("/loaduser", sessionChecker, (req, res, next) => { handleLoadUser(req, res, next) });
 
 app.post("/profileedit", sessionChecker, (req,res,next) => { handleProfileEdit(req, res, next, postgresDB )});

@@ -31,13 +31,18 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
                 currentBalance: accountsInDB[i].current_balance,
                 lowAlertBalance: accountsInDB[i].low_alert_balance,
                 userId: accountsInDB[i].user_id,
-                accountTypeId: accountsInDB[i].account_type_id
+                accountTypeId: accountsInDB[i].account_type_id,
+                userFirstName: req.session.firstName
             }
             accountsArray.push(account);
         }
         return accountsArray;
     }
     const accounts = formatAccounts(accountsInDB);
+
+    const individualAccounts = [
+
+    ]
 
     const initialData = {
         user: user,
