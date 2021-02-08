@@ -19,6 +19,7 @@
 \i '/docker-entrypoint-initdb.d/tables/user_.sql'
 
 -- Add foreign key constraints. --
+\i '/docker-entrypoint-initdb.d/constraints/a_create_gist_for_exclusion_constraints.sql'
 \i '/docker-entrypoint-initdb.d/constraints/account_constraints.sql'
 \i '/docker-entrypoint-initdb.d/constraints/auth_constraints.sql'
 \i '/docker-entrypoint-initdb.d/constraints/household_budget_category_constraints.sql'
