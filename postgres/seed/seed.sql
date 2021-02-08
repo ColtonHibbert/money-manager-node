@@ -174,8 +174,8 @@ INSERT INTO transaction_(
     amount, 
     date,
     memo_note, 
-    category_id,
-    category_item_id, 
+    personal_budget_category_id,
+    personal_budget_category_item_id, 
     transaction_type_id, 
     user_id, 
     account_id ) VALUES 

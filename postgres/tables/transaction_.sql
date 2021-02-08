@@ -5,8 +5,10 @@ CREATE TABLE transaction_(
 	amount NUMERIC,
 	date TIMESTAMP,
 	memo_note VARCHAR(200),
-	category_id INT,
-	category_item_id INT,
+	personal_budget_category_id INT,
+	personal_budget_category_item_id INT,
+	household_budget_category_id INT,
+	household_budget_category_item_id INT,
 	transaction_type_id INT,
 	user_id INT,
     account_id INT
