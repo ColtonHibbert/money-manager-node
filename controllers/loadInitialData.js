@@ -53,10 +53,65 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     })
 
     // grab transactions, 
-    // do a category filter and items filter, I need the actual category names and item names
-    // map those to the personal_budget categories and items,
 
-    const categoryFilter = () => {
+    //grab personal_budget_category and items, get the actual names
+    // then map to transactions
+
+    const personalBudgetCategoriesInDB = await postgresDB.select("*").from("personal_budget_category").where("user_id", "=", req.session.userId)
+    .catch(err => {
+        console.log("loadInitialData: error with getting personal budget categories");
+        return res.status(400).json({error: "There was an error loading your data."});
+    })
+
+    const personalBudgetCategoryItemsInDB = await postgresDB.select("*").from("personal_budget_category_items").where("user_id", "=", res.session.userId)
+    .catch(err => {
+        console.log("loadInitialData: error with getting personal budget category items.");
+        return res.status(400).json({error: "There was an error loading your data."});
+    })
+
+    const uniqueCategoryIds = () => {
+        const existingCategoryIds = [];
+
+        personalBudgetCategoriesInDB.map(category => {
+            if(!existingCategoryIds[category.category_id]) {
+                existingCategoryIds.push(category.category_id);
+            }
+        }) 
+        console.log("loadInitialData, personal budget existingCategoryId's: ", existingCategoryIds);
+        return existingCategoryIds;
+    }
+
+    const uniqueCategoryItemIds = () => {
+        const existingCategoryItemIds = [];
+
+        personalBudgetCategoryItemsInDB.map(item => {
+            if(!existingCategoryItemIds[item.category_item_id]) {
+                existingCategoryItemIds.push(item.category_item_id);
+            }
+        }) 
+        console.log("loadInitialData, personal budget existingCategoryId's: ", existingCategoryIds);
+        return existingCategoryIds;
+    }
+
+    
+    const categoryNames = await postgresDB.select("*").from("category").whereIn("category_id", "=", uniqueCategoryIds())
+    .catch(err => {
+        console.log("loadInitialData, categoryNames error");
+        return res.status(400).json({error: "There was an error loading your data."});
+    })
+    console.log("loadInitialData, categoryNames: ", categoryNames);
+
+    const categoryItemNames = await postgresDB.select("*").from("category_item").whereIn("category_item_id", "=", uniqueCategoryItemIds())
+    .catch(err => {
+        console.log("loadInitialData, categoryItemNames error");
+        return res.status(400).json({error: "There was an error loading your data."});
+    })
+    console.log("loadInitialData, categoryItemNames: ", categoryItemNames);
+
+
+    //use array of category objects, with each having corresponding array of items 
+
+    /*const categoryFilter = () => {
         const existingCategoryIds = [];
 
         transactionsInDB.map(transaction => {
@@ -78,22 +133,9 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         })
         console.log("loadInitialData, existingCategoryItemIds: ", existingCategoryItemIds);
         return existingCategoryItemIds;
-    }
+    }*/
 
 
-    const categoryNames = await postgresDB.select("*").from("category").whereIn("category_id", "=", categoryFilter)
-    .catch(err => {
-        console.log("loadInitialData, categoryNames error");
-        return res.status(400).json({error: "There was an error loading your data."});
-    })
-    console.log("loadInitialData, categoryNames: ", categoryNames);
-
-    const categoryItemNames = await postgresDB.select("*").from("category_item").whereIn("category_item_id", "=", categoryItemFilter)
-    .catch(err => {
-        console.log("loadInitialData, categoryItemNames error");
-        return res.status(400).json({error: "There was an error loading your data."});
-    })
-    console.log("loadInitialData, categoryItemNames: ", categoryItemNames);
 
     //formatTransactions, then we build the transactions per account
 
