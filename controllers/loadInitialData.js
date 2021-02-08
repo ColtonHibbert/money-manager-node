@@ -52,12 +52,16 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         return res.status(400).json({error: "There was an error loading your data."});
     })
 
+    // grab transactions, 
+    // do a category filter and items filter, I need the actual category names and item names
+    // map those to the personal_budget categories and items,
+
     const categoryFilter = () => {
         const existingCategoryIds = [];
 
         transactionsInDB.map(transaction => {
-            if(!existingCategoryIds[transaction.category_id]) {
-                existingCategoryIds.push(transaction.category_id);
+            if(!existingCategoryIds[transaction.personal_budget_category_id]) {
+                existingCategoryIds.push(transaction.personal_budget_category_id);
             }
         })
         console.log("loadInitialData, existingCategoryIds: ",existingCategoryIds);
@@ -68,17 +72,14 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         const existingCategoryItemIds = []; 
 
         transactionsInDB.map(transaction => {
-            if(!existingCategoryItemIds[transaction.category_item_id]) {
-                existingCategoryItemIds.push(transaction.category_item_id);
+            if(!existingCategoryItemIds[transaction.personal_budget_category_item_id]) {
+                existingCategoryItemIds.push(transaction.personal_budget_category_item_id);
             }
         })
         console.log("loadInitialData, existingCategoryItemIds: ", existingCategoryItemIds);
         return existingCategoryItemIds;
     }
 
-    //transactions should? belong to a specific personal budget category, and personal budget_items to a personal category
-    // redo transactions table remove plain category and items, add personal category and items, and also household category and items, they can be null for only personal accounts
-    // redo constraints
 
     const categoryNames = await postgresDB.select("*").from("category").whereIn("category_id", "=", categoryFilter)
     .catch(err => {

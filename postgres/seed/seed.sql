@@ -170,45 +170,6 @@ INSERT INTO account(account_name, current_balance, low_alert_balance, user_id, a
     3
 );
 
-INSERT INTO transaction_(
-    amount, 
-    date,
-    memo_note, 
-    personal_budget_category_id,
-    personal_budget_category_item_id, 
-    transaction_type_id, 
-    user_id, 
-    account_id ) VALUES 
-(
-    -75.00,
-    DEFAULT,
-    'cheesecake factory',
-    5,
-    18,
-    1,
-    1,
-    1
-),
-(
-    50.00,
-    DEFAULT,
-    'venmo for trip',
-    3,
-    13,
-    2,
-    1,
-    2
-),
-(
-    -100.00,
-    DEFAULT,
-    'new shoes',
-    1,
-    9,
-    1,
-    1,
-    3
-);
 
 INSERT INTO personal_budget_category(
     budget_amount,
@@ -323,6 +284,48 @@ INSERT INTO personal_budget_category_item(
 (17,67,1),
 (17,68,1),
 (17,69,1);
+
+
+INSERT INTO transaction_(
+    amount, 
+    date,
+    memo_note, 
+    personal_budget_category_id,
+    personal_budget_category_item_id, 
+    transaction_type_id, 
+    user_id, 
+    account_id ) VALUES 
+(
+    -75.00,
+    DEFAULT,
+    'cheesecake factory',
+    5,
+    18,
+    1,
+    1,
+    1
+),
+(
+    50.00,
+    DEFAULT,
+    'venmo for trip',
+    3,
+    13,
+    2,
+    1,
+    2
+),
+(
+    -100.00,
+    DEFAULT,
+    'new shoes',
+    1,
+    9,
+    1,
+    1,
+    3
+);
+
 
 
 COMMIT;
