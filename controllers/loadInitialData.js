@@ -266,7 +266,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     const initialData = {
         user: user,
         accountSummary: accountSummary,
-        individualAccounts: individualAccounts
+        individualAccounts: individualAccounts,
+        categoriesAndItems: categoriesAndItems
     }
 
     console.log(initialData)
