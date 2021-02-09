@@ -24,6 +24,24 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     .catch(err => res.status(400).json({error: "There was an error loading your data."}))
 
     const formatAccounts = (accountsInDB) => {
+        let accountsObject = {};
+        for(let i = 0; i < accountsInDB.length; i++) {
+            let account = {
+                accountId: accountsInDB[i].account_id,
+                accountName: accountsInDB[i].account_name,
+                currentBalance: accountsInDB[i].current_balance,
+                lowAlertBalance: accountsInDB[i].low_alert_balance,
+                userId: accountsInDB[i].user_id,
+                accountTypeId: accountsInDB[i].account_type_id,
+                userFirstName: req.session.firstName,
+                transactions: []
+            }
+            accountsObject[account.accountId] = account
+        }
+        return accountsObject;
+    }
+
+    const formatAccountsArray = (accountsInDB) => {
         let accountsArray = [];
         for(let i = 0; i < accountsInDB.length; i++) {
             let account = {
@@ -39,13 +57,9 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         }
         return accountsArray;
     }
-    const accounts = formatAccounts(accountsInDB);
 
-    const individualAccounts = [
-        {
-            accounts: accounts
-        }
-    ]
+    const individualAccounts = formatAccounts(accountsInDB);
+    const accountSummary = formatAccountsArray(accountsInDB);
     // end of grabbing and formatting accounts
 
 
@@ -195,7 +209,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     }
 
     const categoriesAndItems = formatCategoriesAndItems();
-     console.log("loadInitialData, categoriesAndItems: ", categoriesAndItems);
+    //console.log("loadInitialData, categoriesAndItems: ", categoriesAndItems);
     // end of formatting categories and items, this data will be used for the budget breakdown, 
 
 
@@ -209,13 +223,12 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     })
 
     const formatTransactions = () => {
-
         const transactionsArray = [];
 
         transactionsInDB.map(transaction => {
             const categoryName = categoriesAndItems[transaction.personal_budget_category_id].name;
-            const categoryItemName = categoriesAndItems[transaction.personal_budget_category_id].items[transaction.personal_budget_category_item_id];
-            console.log(categoryItemName);
+            const categoryItemName = categoriesAndItems[transaction.personal_budget_category_id].items[transaction.personal_budget_category_item_id].name;
+            //console.log(categoryItemName);
 
             const updatedTransaction = {
                 transactionId: transaction.transaction_id,
@@ -234,24 +247,29 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
             };
             transactionsArray.push(updatedTransaction);
         })
-        console.log(transactionsArray);
+        return transactionsArray;
     }
     const transactionsArray = formatTransactions();
 
+    
     const formatIndividualAccounts = () => {
-        transactionsInDB.map(transaction => {
-            if(individualAccounts.accounts.accountId === transaction.account_id) {
-
+        transactionsArray.map(transaction => {
+            console.log("individualAccounts[transaction.accountId], transaction.accountId",individualAccounts[transaction.accountId], transaction.accountId)
+            if(individualAccounts[transaction.accountId].accountId === transaction.accountId) {
+                individualAccounts[transaction.accountId].transactions.push(transaction);
             }
-        })
-        // of of O of n, can do map through transactions, if account id matches, push to individualAccount of that Id,
+         })
     }
+    formatIndividualAccounts();
+    
 
     const initialData = {
         user: user,
-        accounts: accounts
+        accountSummary: accountSummary,
+        individualAccounts: individualAccounts
     }
 
+    console.log(initialData)
     return res.send(JSON.stringify({initialData}));
 
 })
