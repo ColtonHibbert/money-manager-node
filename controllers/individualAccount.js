@@ -25,8 +25,8 @@ const handleIndividualAccount = (req, res, next, postgresDB) => {
                     memo_note,
                     category_id,
                     category_item_id,
-                    category_name--add,
-                    category_item_name--add,
+                    category_name,
+                    category_item_name,
                     transaction_type_id,
                     user_id,
                     account_id INT
