@@ -206,7 +206,6 @@ INSERT INTO personal_budget_category_item(
 (1,7,1),
 (1,8,1),
 (1,9,1),
-(1,1,1),
 
 (2,10,1),
 (2,11,1),
