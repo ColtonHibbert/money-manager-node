@@ -188,13 +188,14 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
                 name: categoryItemNamesObject[itemInstance.category_item_id].categoryItemName
             }
             categories[item.personalBudgetCategoryId].items[item.personalBudgetCategoryItemId] =  item;
+            console.log(item)
         })
         
         return categories;
     }
 
     const categoriesAndItems = formatCategoriesAndItems();
-    // console.log("loadInitialData, categoriesAndItems: ", categoriesAndItems);
+     console.log("loadInitialData, categoriesAndItems: ", categoriesAndItems);
     // end of formatting categories and items, this data will be used for the budget breakdown, 
 
 
@@ -212,7 +213,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         let transactionsArray = [];
 
         transactionsInDB.map(transaction => {
-            const categoryName = categoryNames[transaction.category_id].category_name;
+            const categoryName = categoriesAndItems[transaction.personal_budget_category_id].name;
+            const categoryItemName = categoriesAndItems[transaction.personal_budget_category_id].items[transaction.personal_budget_category_item_id]
 
             const updatedTransaction = {
                 transactionId: transaction.transaction_id,
@@ -220,6 +222,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
                 date: transaction.date, 
                 memoNote: transaction.memo_note,
                 categoryName: categoryName,
+                categoryItemName: categoryItemName,
                 personalBudgetCategoryId: transaction.personal_budget_category_id,
                 personalBudgetCategoryItemId: transaction.personal_budget_category_item_id,
                 householdBudgetCategoryId: transaction.household_budget_category_id,
