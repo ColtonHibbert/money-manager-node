@@ -299,7 +299,7 @@ INSERT INTO transaction_(
     DEFAULT,
     'cheesecake factory',
     5,
-    18,
+    16,
     1,
     1,
     1
@@ -309,7 +309,7 @@ INSERT INTO transaction_(
     DEFAULT,
     'venmo for trip',
     3,
-    13,
+    11,
     2,
     1,
     2
@@ -319,7 +319,7 @@ INSERT INTO transaction_(
     DEFAULT,
     'new shoes',
     1,
-    9,
+    7,
     1,
     1,
     3
