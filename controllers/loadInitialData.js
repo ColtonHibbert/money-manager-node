@@ -208,15 +208,14 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         return res.status(400).json({error: "There was an error loading your data."});
     })
 
-    // something in categories is wrong and items, they are off two index, i need to use personal budget ids, not the cat id
     const formatTransactions = () => {
 
-        let transactionsArray = [];
+        const transactionsArray = [];
 
         transactionsInDB.map(transaction => {
             const categoryName = categoriesAndItems[transaction.personal_budget_category_id].name;
-            const categoryItemName = categoriesAndItems[transaction.personal_budget_category_id].items; // transaction.personal_budget_category_item_id
-            console.log(categoryItemName)
+            const categoryItemName = categoriesAndItems[transaction.personal_budget_category_id].items[transaction.personal_budget_category_item_id];
+            console.log(categoryItemName);
 
             const updatedTransaction = {
                 transactionId: transaction.transaction_id,
@@ -224,17 +223,20 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
                 date: transaction.date, 
                 memoNote: transaction.memo_note,
                 categoryName: categoryName,
-                categoryItemName: "",
+                categoryItemName: categoryItemName,
                 personalBudgetCategoryId: transaction.personal_budget_category_id,
                 personalBudgetCategoryItemId: transaction.personal_budget_category_item_id,
                 householdBudgetCategoryId: transaction.household_budget_category_id,
-                householdBudgetCategoryItemId: transaction.household_budget_category_item_id
+                householdBudgetCategoryItemId: transaction.household_budget_category_item_id,
+                transactionTypeId: transaction.transaction_type_id,
+                userId: transaction.user_id,
+                accountId: transaction.account_id
             };
             transactionsArray.push(updatedTransaction);
         })
         console.log(transactionsArray);
     }
-    const transactions = formatTransactions();
+    const transactionsArray = formatTransactions();
 
     const formatIndividualAccounts = () => {
         transactionsInDB.map(transaction => {
