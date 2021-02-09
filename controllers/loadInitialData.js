@@ -196,17 +196,16 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     const categoriesAndItems = formatCategoriesAndItems();
     // console.log("loadInitialData, categoriesAndItems: ", categoriesAndItems);
     // end of formatting categories and items, this data will be used for the budget breakdown, 
-    // the formatted categories and items will be mapped to the transactions
 
-  
 
-    //formatTransactions, then we build the transactions per account
+    //formatTransactions, 
+    //then add to account the specific transactions
     
-   const transactionsInDB = await postgresDB.select("*").from("transaction_").where("user_id", "=", req.session.userId)
-   .catch(err => {
-       console.log("loadInitialData: error with getting transactions");
-       return res.status(400).json({error: "There was an error loading your data."});
-   })
+    const transactionsInDB = await postgresDB.select("*").from("transaction_").where("user_id", "=", req.session.userId)
+    .catch(err => {
+        console.log("loadInitialData: error with getting transactions");
+        return res.status(400).json({error: "There was an error loading your data."});
+    })
 
     const formatTransactions = () => {
 
@@ -216,16 +215,21 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
             const categoryName = categoryNames[transaction.category_id].category_name;
 
             const updatedTransaction = {
-                transactionId: transaction_id,
-                amount: amount,
-                date: date, 
-                memoNote: memo_note,
-                categoryId: category_id,
+                transactionId: transaction.transaction_id,
+                amount: transaction.amount,
+                date: transaction.date, 
+                memoNote: transaction.memo_note,
                 categoryName: categoryName,
+                personalBudgetCategoryId: transaction.personal_budget_category_id,
+                personalBudgetCategoryItemId: transaction.personal_budget_category_item_id,
+                householdBudgetCategoryId: transaction.household_budget_category_id,
+                householdBudgetCategoryItemId: transaction.household_budget_category_item_id
             };
             transactionsArray.push(updatedTransaction);
         })
+        console.log(transactionsArray);
     }
+    const transactions = formatTransactions();
 
     const formatIndividualAccounts = () => {
         transactionsInDB.map(transaction => {
