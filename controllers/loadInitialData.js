@@ -68,11 +68,18 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         console.log("loadInitialData: error with getting personal budget category items.");
         return res.status(400).json({error: "There was an error loading your data."});
     })
+    // has "other" aka category_item_1, we see this on entry 8
 
+    //console.log("loadInitialData, personalBudgetCategoriesInDB: ", personalBudgetCategoriesInDB);
+    //console.log("loadInitialData, personalBudgetCategoryItemsInDB: ", personalBudgetCategoryItemsInDB);
+
+    // broken here // using ARRAYS not objects cant do lookup the same, only index
     const uniqueCategoryIds = () => {
         const existingCategoryIds = [];
 
+    
         personalBudgetCategoriesInDB.map(category => {
+            console.log("category,",category);
             if(!existingCategoryIds[category.category_id]) {
                 existingCategoryIds.push(category.category_id);
             }
@@ -81,11 +88,13 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         return existingCategoryIds;
     }
 
+    // broken here
     const uniqueCategoryItemIds = () => {
         const existingCategoryItemIds = [];
 
         personalBudgetCategoryItemsInDB.map(item => {
-            if(!existingCategoryItemIds[item.category_item_id]) {
+            console.log("item", item)
+            if(existingCategoryItemIds[item.category_item_id]) {
                 existingCategoryItemIds.push(item.category_item_id);
             }
         }) 
@@ -102,7 +111,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         console.log("loadInitialData, categoryNames error");
         return res.status(400).json({error: "There was an error loading your data."});
     })
-    console.log("loadInitialData, categoryNames: ", categoryNamesArray);
+    //console.log("loadInitialData, categoryNames: ", categoryNamesArray);
 
     
     //changing the names array into an object so we can do lookup/ memoize, 
@@ -124,7 +133,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         console.log("loadInitialData, categoryItemNames error");
         return res.status(400).json({error: "There was an error loading your data."});
     })
-    console.log("loadInitialData, categoryItemNames: ", categoryItemNamesArray);
+    //console.log("loadInitialData, categoryItemNames: ", categoryItemNamesArray);
 
     //changing names array to object to lookup/memoize
     const makeCategoryItemNamesObject = () => {
@@ -140,7 +149,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
 
     const categoryItemNamesObject = makeCategoryItemNamesObject();
 
-    console.log("loadInitialData, categoryItemNamesObject: ",categoryItemNamesObject)
+    //console.log("loadInitialData, categoryNamesObject: ", categoryNamesObject);
+    //console.log("loadInitialData, categoryItemNamesObject: ",categoryItemNamesObject);
 
     //use array of category objects, with each having corresponding array of items, map the names
     const formatCategoriesAndItems = () => {
@@ -162,19 +172,17 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
 
         
         personalBudgetCategoryItemsInDB.map(itemInstance => {
+            console.log("itemInstance: ", itemInstance)
             const item = {
                 personalBudgetCategoryItemId: itemInstance.personal_budget_category_item_id,
                 personalBudgetCategoryId: itemInstance.personal_budget_category_id,
                 categoryItemId: itemInstance.category_item_id,
                 userId: itemInstance.user_id,
-                name: ""
+                name: categoryItemNamesObject[itemInstance.category_item_id].categoryItemName
             }
-            const itemId = item.personalBudgetCategoryItemId;
-            console.log(categoryItemNamesObject[itemId])
-            //console.log(categoryItemNamesObject[itemInstance.category_item_id].categoryItemName)
-            //const categoryId = categories[item.personalBudgetCategoryId];
-            //console.log(categoryId);
-            //categories[categoryId].items[itemId] =  item;
+            
+            console.log("item",  item)
+            //categories[item.personalBudgetCategoryId].items[item.personalBudgetCategoryItemId] =  item;
         })
         
         return categories;
