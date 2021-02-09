@@ -15,6 +15,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         csrf: req.csrfToken()
     }
 
+    // start of accounts 
     const accountsInDB = await postgresDB.select("*").from("account").where("user_id", "=", user.userId)
     .then(data => {
         console.log("loadInitialData, accountsInDB: ", data);
@@ -45,18 +46,11 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
             accounts: accounts
         }
     ]
+    // end of grabbing and formatting accounts
 
-    const transactionsInDB = await postgresDB.select("*").from("transaction_").where("user_id", "=", req.session.userId)
-    .catch(err => {
-        console.log("loadInitialData: error with getting transactions");
-        return res.status(400).json({error: "There was an error loading your data."});
-    })
 
-    // grab transactions, 
-
-    //grab personal_budget_category and items, get the actual names
-    // then map to transactions
-
+    // Start of creating personal budget categories and items
+    // get all personal categories and personal items
     const personalBudgetCategoriesInDB = await postgresDB.select("*").from("personal_budget_category").where("user_id", "=", req.session.userId)
     .catch(err => {
         console.log("loadInitialData: error with getting personal budget categories");
@@ -68,44 +62,55 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         console.log("loadInitialData: error with getting personal budget category items.");
         return res.status(400).json({error: "There was an error loading your data."});
     })
-    // has "other" aka category_item_1, we see this on entry 8
-
     //console.log("loadInitialData, personalBudgetCategoriesInDB: ", personalBudgetCategoriesInDB);
     //console.log("loadInitialData, personalBudgetCategoryItemsInDB: ", personalBudgetCategoryItemsInDB);
 
-    // broken here // using ARRAYS not objects cant do lookup the same, only index
+    // Grab unique Generic category ids and category item ids, 
+    // we will later compare the ids to the personal, some categories like "other" may be repeated, we only need 1 of each generic which we will use to later map the generic name to the personal
     const uniqueCategoryIds = () => {
-        const existingCategoryIds = [];
-
-    
+        const existingCategoryIdsObject = {};
         personalBudgetCategoriesInDB.map(category => {
-            console.log("category,",category);
-            if(!existingCategoryIds[category.category_id]) {
-                existingCategoryIds.push(category.category_id);
+            //console.log("category,",category);
+            if(!existingCategoryIdsObject[category.category_id]) {
+                existingCategoryIdsObject[category.category_id] = category.category_id;
             }
         }) 
-        console.log("loadInitialData, personal budget existingCategoryId's: ", existingCategoryIds);
-        return existingCategoryIds;
+        //console.log("loadInitialData, personal budget existingCategoryId's: ", existingCategoryIdsObject);
+
+        const existingCategoryIdsArray = [];
+        for(entry in existingCategoryIdsObject) {
+            existingCategoryIdsArray.push(entry);
+        }
+        //console.log(existingCategoryIdsArray);
+
+        return existingCategoryIdsArray;
     }
 
-    // broken here
     const uniqueCategoryItemIds = () => {
-        const existingCategoryItemIds = [];
-
+        const existingCategoryItemIdsObject = {};
         personalBudgetCategoryItemsInDB.map(item => {
-            console.log("item", item)
-            if(existingCategoryItemIds[item.category_item_id]) {
-                existingCategoryItemIds.push(item.category_item_id);
+            //console.log("item", item)
+            if(!existingCategoryItemIdsObject[item.category_item_id]) {
+                existingCategoryItemIdsObject[item.category_item_id] = item.category_item_id;
             }
         }) 
-        console.log("loadInitialData, personal budget existingCategoryItemId's: ", existingCategoryItemIds);
-        return existingCategoryItemIds;
+        //console.log("loadInitialData, personal budget existingCategoryItemId's: ", existingCategoryItemIdsObject);
+
+        const existingCategoryItemIdsArray = [];
+        for(entry in existingCategoryItemIdsObject) {
+            existingCategoryItemIdsArray.push(entry);
+        }
+        //console.log(existingCategoryItemIdsArray);
+
+        return existingCategoryItemIdsArray;
     }
- 
+
     const generalCategories = uniqueCategoryIds();
     const generalCategoryItems = uniqueCategoryItemIds();
+    // end of getting unique general categories and items
 
-    
+
+    // get array of generic categories
     const categoryNamesArray = await postgresDB.select("*").from("category").whereIn("category_id", generalCategories)
     .catch(err => {
         console.log("loadInitialData, categoryNames error");
@@ -113,8 +118,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     })
     //console.log("loadInitialData, categoryNames: ", categoryNamesArray);
 
-    
-    //changing the names array into an object so we can do lookup/ memoize, 
+    //changing the generic categoryNamesArray into an object so we can do lookup/ memoize, 
     const makeCategoryNamesObject = () => {
         categoriesObject = {};
         categoryNamesArray.map(category => {
@@ -135,7 +139,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     })
     //console.log("loadInitialData, categoryItemNames: ", categoryItemNamesArray);
 
-    //changing names array to object to lookup/memoize
+    //changing generic categoryItemNamesArray to object to lookup/memoize
     const makeCategoryItemNamesObject = () => {
         itemsObject = {};
         categoryItemNamesArray.map(item => {
@@ -151,8 +155,12 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
 
     //console.log("loadInitialData, categoryNamesObject: ", categoryNamesObject);
     //console.log("loadInitialData, categoryItemNamesObject: ",categoryItemNamesObject);
+    // end of getting the generic categories and items and converting them to objects
 
-    //use array of category objects, with each having corresponding array of items, map the names
+
+
+   // format categories into an object so we can do lookup/memoize easily 
+   // each category wil have an items object that will also contain the category items in object format for easy lookup
     const formatCategoriesAndItems = () => {
 
         const categories = {};
@@ -172,7 +180,6 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
 
         
         personalBudgetCategoryItemsInDB.map(itemInstance => {
-            console.log("itemInstance: ", itemInstance)
             const item = {
                 personalBudgetCategoryItemId: itemInstance.personal_budget_category_item_id,
                 personalBudgetCategoryId: itemInstance.personal_budget_category_id,
@@ -180,27 +187,27 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
                 userId: itemInstance.user_id,
                 name: categoryItemNamesObject[itemInstance.category_item_id].categoryItemName
             }
-            
-            console.log("item",  item)
-            //categories[item.personalBudgetCategoryId].items[item.personalBudgetCategoryItemId] =  item;
+            categories[item.personalBudgetCategoryId].items[item.personalBudgetCategoryItemId] =  item;
         })
         
         return categories;
     }
 
     const categoriesAndItems = formatCategoriesAndItems();
+    // console.log("loadInitialData, categoriesAndItems: ", categoriesAndItems);
+    // end of formatting categories and items, this data will be used for the budget breakdown, 
+    // the formatted categories and items will be mapped to the transactions
 
-    console.log("loadInitialData, categoriesAndItems: ", categoriesAndItems);
+  
 
     //formatTransactions, then we build the transactions per account
-
-
-    /*
-    transactionsInDB.map(transaction => {
-        transaction.category_id === categoryNames[memoizeCategoryId]
-    })
-    */
     
+   const transactionsInDB = await postgresDB.select("*").from("transaction_").where("user_id", "=", req.session.userId)
+   .catch(err => {
+       console.log("loadInitialData: error with getting transactions");
+       return res.status(400).json({error: "There was an error loading your data."});
+   })
+
     const formatTransactions = () => {
 
         let transactionsArray = [];
