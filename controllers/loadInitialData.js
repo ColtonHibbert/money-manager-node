@@ -63,7 +63,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         return res.status(400).json({error: "There was an error loading your data."});
     })
 
-    const personalBudgetCategoryItemsInDB = await postgresDB.select("*").from("personal_budget_category_items").where("user_id", "=", res.session.userId)
+    const personalBudgetCategoryItemsInDB = await postgresDB.select("*").from("personal_budget_category_item").where("user_id", "=", req.session.userId)
     .catch(err => {
         console.log("loadInitialData: error with getting personal budget category items.");
         return res.status(400).json({error: "There was an error loading your data."});
@@ -89,53 +89,100 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
                 existingCategoryItemIds.push(item.category_item_id);
             }
         }) 
-        console.log("loadInitialData, personal budget existingCategoryId's: ", existingCategoryIds);
-        return existingCategoryIds;
+        console.log("loadInitialData, personal budget existingCategoryItemId's: ", existingCategoryItemIds);
+        return existingCategoryItemIds;
     }
+ 
+    const generalCategories = uniqueCategoryIds();
+    const generalCategoryItems = uniqueCategoryItemIds();
 
     
-    const categoryNames = await postgresDB.select("*").from("category").whereIn("category_id", "=", uniqueCategoryIds())
+    const categoryNamesArray = await postgresDB.select("*").from("category").whereIn("category_id", generalCategories)
     .catch(err => {
         console.log("loadInitialData, categoryNames error");
         return res.status(400).json({error: "There was an error loading your data."});
     })
-    console.log("loadInitialData, categoryNames: ", categoryNames);
+    console.log("loadInitialData, categoryNames: ", categoryNamesArray);
 
-    const categoryItemNames = await postgresDB.select("*").from("category_item").whereIn("category_item_id", "=", uniqueCategoryItemIds())
+    
+    //changing the names array into an object so we can do lookup/ memoize, 
+    const makeCategoryNamesObject = () => {
+        categoriesObject = {};
+        categoryNamesArray.map(category => {
+            categoriesObject[category.category_id] = {
+                categoryId: category.category_id,
+                categoryName: category.category_name
+            }
+        })
+        return categoriesObject;
+    }
+
+    const categoryNamesObject = makeCategoryNamesObject();
+
+    const categoryItemNamesArray = await postgresDB.select("*").from("category_item").whereIn("category_item_id", generalCategoryItems)
     .catch(err => {
         console.log("loadInitialData, categoryItemNames error");
         return res.status(400).json({error: "There was an error loading your data."});
     })
-    console.log("loadInitialData, categoryItemNames: ", categoryItemNames);
+    console.log("loadInitialData, categoryItemNames: ", categoryItemNamesArray);
 
-
-    //use array of category objects, with each having corresponding array of items 
-
-    /*const categoryFilter = () => {
-        const existingCategoryIds = [];
-
-        transactionsInDB.map(transaction => {
-            if(!existingCategoryIds[transaction.personal_budget_category_id]) {
-                existingCategoryIds.push(transaction.personal_budget_category_id);
+    //changing names array to object to lookup/memoize
+    const makeCategoryItemNamesObject = () => {
+        itemsObject = {};
+        categoryItemNamesArray.map(item => {
+            itemsObject[item.category_item_id] = {
+                categoryItemId: item.category_item_id,
+                categoryItemName: item.category_item_name
             }
         })
-        console.log("loadInitialData, existingCategoryIds: ",existingCategoryIds);
-        return existingCategoryIds;
+        return itemsObject;
     }
 
-    const categoryItemFilter = () => {
-        const existingCategoryItemIds = []; 
+    const categoryItemNamesObject = makeCategoryItemNamesObject();
 
-        transactionsInDB.map(transaction => {
-            if(!existingCategoryItemIds[transaction.personal_budget_category_item_id]) {
-                existingCategoryItemIds.push(transaction.personal_budget_category_item_id);
+    console.log("loadInitialData, categoryItemNamesObject: ",categoryItemNamesObject)
+
+    //use array of category objects, with each having corresponding array of items, map the names
+    const formatCategoriesAndItems = () => {
+
+        const categories = {};
+
+        personalBudgetCategoriesInDB.map(categoryInstance => {
+            const category = {
+                personalBudgetCategoryId: categoryInstance.personal_budget_category_id,
+                budgetAmount: categoryInstance.budget_amount,
+                categoryId: categoryInstance.category_id,
+                userId: categoryInstance.user_id,
+                name: categoryNamesObject[categoryInstance.category_id].categoryName,
+                items: {}
             }
+        const id = category.personalBudgetCategoryId;
+        categories[id] = category;
         })
-        console.log("loadInitialData, existingCategoryItemIds: ", existingCategoryItemIds);
-        return existingCategoryItemIds;
-    }*/
 
+        
+        personalBudgetCategoryItemsInDB.map(itemInstance => {
+            const item = {
+                personalBudgetCategoryItemId: itemInstance.personal_budget_category_item_id,
+                personalBudgetCategoryId: itemInstance.personal_budget_category_id,
+                categoryItemId: itemInstance.category_item_id,
+                userId: itemInstance.user_id,
+                name: ""
+            }
+            const itemId = item.personalBudgetCategoryItemId;
+            console.log(categoryItemNamesObject[itemId])
+            //console.log(categoryItemNamesObject[itemInstance.category_item_id].categoryItemName)
+            //const categoryId = categories[item.personalBudgetCategoryId];
+            //console.log(categoryId);
+            //categories[categoryId].items[itemId] =  item;
+        })
+        
+        return categories;
+    }
 
+    const categoriesAndItems = formatCategoriesAndItems();
+
+    console.log("loadInitialData, categoriesAndItems: ", categoriesAndItems);
 
     //formatTransactions, then we build the transactions per account
 
