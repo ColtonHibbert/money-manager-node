@@ -262,7 +262,19 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     }
     formatIndividualAccounts();
 
+    // fix date submission on postgres
     // add monthly spend, deposit, transactions to individualAccounts, should I do this before or after array?
+    // individualAccount,
+    // add array of monthly transactions, by filtering through the transactions I already grabbed
+    // go back 30 days in JS and filter by that
+    // monthlyTransactions: [],
+    // then filter through the monthlyTransactions and look up the type, build amounts
+    // depositsMonthly: quantity
+    // depositsMonthlyAmount: dollars
+    // spendingMonthly: quantity,
+    // spendingMonthlyAmount: dollars
+    // transactionsMonthly: quantity
+    // transactionsMonthlyAmount: dollars 
 
     const formatIndividualAccountsToArray = () => {
         const individualAccountsKeysArray = [];
