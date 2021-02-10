@@ -250,7 +250,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         return transactionsArray;
     }
     const transactionsArray = formatTransactions();
-
+    //FILTER HERE 
     
     const formatIndividualAccounts = () => {
         transactionsArray.map(transaction => {
@@ -262,8 +262,6 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     }
     formatIndividualAccounts();
 
-    // fix date submission on postgres
-    // add monthly spend, deposit, transactions to individualAccounts, should I do this before or after array?
     // individualAccount,
     // add array of monthly transactions, by filtering through the transactions I already grabbed
     // go back 30 days in JS and filter by that
