@@ -18,7 +18,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     // start of accounts 
     const accountsInDB = await postgresDB.select("*").from("account").where("user_id", "=", user.userId)
     .then(data => {
-        console.log("loadInitialData, accountsInDB: ", data);
+        //console.log("loadInitialData, accountsInDB: ", data);
         return data
     })
     .catch(err => res.status(400).json({error: "There was an error loading your data."}))
@@ -202,7 +202,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
                 name: categoryItemNamesObject[itemInstance.category_item_id].categoryItemName
             }
             categories[item.personalBudgetCategoryId].items[item.personalBudgetCategoryItemId] =  item;
-            console.log("item in categories and Items:", item);
+            //console.log("item in categories and Items:", item);
         })
         
         return categories;
@@ -254,7 +254,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     
     const formatIndividualAccounts = () => {
         transactionsArray.map(transaction => {
-            console.log("individualAccounts[transaction.accountId], transaction.accountId",individualAccounts[transaction.accountId], transaction.accountId)
+            //console.log("individualAccounts[transaction.accountId], transaction.accountId",individualAccounts[transaction.accountId], transaction.accountId)
             if(individualAccounts[transaction.accountId].accountId === transaction.accountId) {
                 individualAccounts[transaction.accountId].transactions.push(transaction);
             }
@@ -275,19 +275,20 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     // spendingMonthlyAmount: dollars
     // transactionsMonthly: quantity
     // transactionsMonthlyAmount: dollars 
+    console.log(individualAccounts)
 
     const formatIndividualAccountsToArray = () => {
         const individualAccountsKeysArray = [];
         for(account in individualAccounts) {
             individualAccountsKeysArray.push(account);
         }
-        console.log("individualaccountskeysarray", individualAccountsKeysArray);
+        //console.log("individualaccountskeysarray", individualAccountsKeysArray);
 
         const individualAccountsArray = [];
         for(let i = 0; i < individualAccountsKeysArray.length; i++) {
             individualAccountsArray.push(individualAccounts[individualAccountsKeysArray[i]]);
         }
-        console.log("individualAccountsArray: ", individualAccountsArray);
+        //console.log("individualAccountsArray: ", individualAccountsArray);
         return individualAccountsArray;
     }
     const individualAccountsArray = formatIndividualAccountsToArray();
@@ -297,7 +298,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         for(category in categoriesAndItems) {
             categoriesKeysArray.push(category);
         }
-        console.log("categorykeysArray, :", categoriesKeysArray);
+        //console.log("categorykeysArray, :", categoriesKeysArray);
 
         const categoriesAndItemsArray = [];
         for(let i = 0; i < categoriesKeysArray.length; i++) {
@@ -308,7 +309,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
             }
             categoriesAndItemsArray[i].items = tempArray;
         }
-        console.log(categoriesAndItemsArray);
+        //console.log(categoriesAndItemsArray);
         return categoriesAndItemsArray;
     }
 
