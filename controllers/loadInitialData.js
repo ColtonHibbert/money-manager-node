@@ -280,11 +280,33 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     }
     const individualAccountsArray = formatIndividualAccountsToArray();
 
+    const formatCategoriesAndItemsToArray = () => {
+        const categoriesKeysArray = [];
+        for(category in categoriesAndItems) {
+            categoriesKeysArray.push(category);
+        }
+        console.log("categorykeysArray, :", categoriesKeysArray);
+
+        const categoriesAndItemsArray = [];
+        for(let i = 0; i < categoriesKeysArray.length; i++) {
+            categoriesAndItemsArray.push(categoriesAndItems[categoriesKeysArray[i]])   
+            let tempArray = [];
+            for(item in categoriesAndItemsArray[i].items) {
+                tempArray.push(categoriesAndItemsArray[i].items[item])
+            }
+            categoriesAndItemsArray[i].items = tempArray;
+        }
+        console.log(categoriesAndItemsArray);
+        return categoriesAndItemsArray;
+    }
+
+    const categoriesAndItemsArray = formatCategoriesAndItemsToArray();
+
     const initialData = {
         user: user,
         accountSummary: accountSummary,
         individualAccounts: individualAccountsArray,
-        categoriesAndItems: categoriesAndItems
+        categoriesAndItems: categoriesAndItemsArray
     }
 
     //console.log(initialData)
