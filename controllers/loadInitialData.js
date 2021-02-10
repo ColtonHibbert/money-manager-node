@@ -262,7 +262,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     }
     formatIndividualAccounts();
 
-    // change individualAccounts to array, as well as categoriesAndItems, Easier for front end...
+    // add monthly spend, deposit, transactions to individualAccounts, should I do this before or after array?
 
     const formatIndividualAccountsToArray = () => {
         const individualAccountsKeysArray = [];
