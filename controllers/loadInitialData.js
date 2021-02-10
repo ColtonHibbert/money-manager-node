@@ -261,16 +261,33 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
          })
     }
     formatIndividualAccounts();
-    
+
+    // change individualAccounts to array, as well as categoriesAndItems, Easier for front end...
+
+    const formatIndividualAccountsToArray = () => {
+        const individualAccountsKeysArray = [];
+        for(account in individualAccounts) {
+            individualAccountsKeysArray.push(account);
+        }
+        console.log("individualaccountskeysarray", individualAccountsKeysArray);
+
+        const individualAccountsArray = [];
+        for(let i = 0; i < individualAccountsKeysArray.length; i++) {
+            individualAccountsArray.push(individualAccounts[individualAccountsKeysArray[i]]);
+        }
+        console.log("individualAccountsArray: ", individualAccountsArray);
+        return individualAccountsArray;
+    }
+    const individualAccountsArray = formatIndividualAccountsToArray();
 
     const initialData = {
         user: user,
         accountSummary: accountSummary,
-        individualAccounts: individualAccounts,
+        individualAccounts: individualAccountsArray,
         categoriesAndItems: categoriesAndItems
     }
 
-    console.log(initialData)
+    //console.log(initialData)
     return res.send(JSON.stringify({initialData}));
 
 })
