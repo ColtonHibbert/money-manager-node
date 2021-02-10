@@ -3,7 +3,7 @@ BEGIN TRANSACTION;
 CREATE TABLE transaction_(
 	transaction_id SERIAL NOT NULL PRIMARY KEY,
 	amount NUMERIC,
-	date TIMESTAMP,
+	date TIMESTAMPTZ DEFAULT NOW(),
 	memo_note VARCHAR(200),
 	personal_budget_category_id INT,
 	personal_budget_category_item_id INT,

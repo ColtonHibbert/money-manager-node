@@ -8,7 +8,7 @@ CREATE TABLE user_ (
 	address TEXT, 
 	phone TEXT,
 	about TEXT,
-	joined TIMESTAMP,
+	joined TIMESTAMPTZ DEFAULT NOW(),
 	household_member_id INT,
 	household_id INT,
 	household_owner_id INT,
