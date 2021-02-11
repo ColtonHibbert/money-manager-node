@@ -29,8 +29,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
             let account = {
                 accountId: accountsInDB[i].account_id,
                 accountName: accountsInDB[i].account_name,
-                currentBalance: accountsInDB[i].current_balance,
-                lowAlertBalance: accountsInDB[i].low_alert_balance,
+                currentBalance: Number(accountsInDB[i].current_balance),
+                lowAlertBalance: Number(accountsInDB[i].low_alert_balance),
                 userId: accountsInDB[i].user_id,
                 accountTypeId: accountsInDB[i].account_type_id,
                 userFirstName: req.session.firstName,
@@ -39,8 +39,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
                 transactionsMonthlyQuantity: 0,
                 depositsMonthlyQuantity: 0,
                 depositsMonthlyAmount: 0,
-                withdrawalMonthlyQuantity: 0,
-                withdrawalMonthlyAmount: 0,
+                withdrawalsMonthlyQuantity: 0,
+                withdrawalsMonthlyAmount: 0,
                 transfersMonthlyQuantity: 0,
                 transfersMonthlyAmount: 0
             }
@@ -55,8 +55,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
             let account = {
                 accountId: accountsInDB[i].account_id,
                 accountName: accountsInDB[i].account_name,
-                currentBalance: accountsInDB[i].current_balance,
-                lowAlertBalance: accountsInDB[i].low_alert_balance,
+                currentBalance: Number(accountsInDB[i].current_balance),
+                lowAlertBalance: Number(accountsInDB[i].low_alert_balance),
                 userId: accountsInDB[i].user_id,
                 accountTypeId: accountsInDB[i].account_type_id,
                 userFirstName: req.session.firstName
@@ -190,7 +190,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         personalBudgetCategoriesInDB.map(categoryInstance => {
             const category = {
                 personalBudgetCategoryId: categoryInstance.personal_budget_category_id,
-                budgetAmount: categoryInstance.budget_amount,
+                budgetAmount: Number(categoryInstance.budget_amount),
                 categoryId: categoryInstance.category_id,
                 userId: categoryInstance.user_id,
                 name: categoryNamesObject[categoryInstance.category_id].categoryName,
@@ -229,6 +229,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         console.log("loadInitialData: error with getting transactions");
         return res.status(400).json({error: "There was an error loading your data."});
     })
+    console.log("transactionsInDB: ", transactionsInDB)
 
     const formatTransactions = () => {
         const transactionsArray = [];
@@ -240,7 +241,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
 
             const updatedTransaction = {
                 transactionId: transaction.transaction_id,
-                amount: transaction.amount,
+                amount: Number(transaction.amount),
                 date: transaction.date, 
                 memoNote: transaction.memo_note,
                 categoryName: categoryName,
@@ -259,14 +260,14 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     }
     const transactionsArray = formatTransactions();
     //FILTER HERE 
-    console.log("transactionsArray: ",transactionsArray)
+    //console.log("transactionsArray: ",transactionsArray)
 
     const date31DaysPrior = (Date.now() - (60000 * 60 * 24 * 31));
     
     const formatMonthlyTransactionsAllAccounts = (transactionsArray) => {
         const transactionsMonthlyAllAccounts = [];
-        let withdrawalQuantity = 0;
-        let withdrawalAmount = 0;
+        let withdrawalsQuantity = 0;
+        let withdrawalsAmount = 0;
         let depositsQuantity = 0;
         let depositsAmount = 0;
         let transferQuantity = 0;
@@ -274,21 +275,21 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
 
 
         transactionsArray.map(transaction => {
-            console.log(Date.parse(transaction.date) > date31DaysPrior)
-            console.log("date, date.parse, 31prior :", transaction.date, Date.parse(transaction.date), date31DaysPrior)
+            //console.log(Date.parse(transaction.date) > date31DaysPrior)
+            //console.log("date, date.parse, 31prior :", transaction.date, Date.parse(transaction.date), date31DaysPrior)
             if(Date.parse(transaction.date) > date31DaysPrior) {
-                monthlyTransactionsAllAccounts.push(transaction);
+                transactionsMonthlyAllAccounts.push(transaction);
             }
             if(Date.parse(transaction.date) > date31DaysPrior) {
                 if(transaction.transactionTypeId === 1) {
                     //withdrawal
-                    withdrawalQuantity += 1;
-                    withdrawalAmount += transaction.amount;
+                    withdrawalsQuantity += 1;
+                    withdrawalsAmount += transaction.amount;
                 }
                 if(transaction.transactionTypeId === 2) {
                     //deposit
                     depositsQuantity += 1;
-                    depositsAmount += transasction.amount;
+                    depositsAmount += transaction.amount;
                 }
                 if(transaction.transactionTypeId === 3) {
                     //transfer
@@ -305,8 +306,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
             transactionsMonthlyAllAccountsQuantity: transactionsMonthlyAllAccounts.length,
             depositsMonthlyAllAccountsQuantity: depositsQuantity,
             depositsMonthlyAllAccountsAmount: depositsAmount,
-            withdrawalMonthlyAllAccountsQuantity: withdrawalQuantity,
-            withdrawalMonthlyAllAccountsAmount: withdrawalAmount,
+            withdrawalsMonthlyAllAccountsQuantity: withdrawalsQuantity,
+            withdrawalsMonthlyAllAccountsAmount: withdrawalsAmount,
             transfersMonthlyAllAccountsQuantity: transferQuantity,
             transfersMonthlyAllAccountsAmount: transferAmount
         };
@@ -336,8 +337,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
             if(individualAccounts[transaction.accountId].accountId === transaction.accountId && Date.parse(individualAccounts[transaction.accountId].date) > date31DaysPrior) {
                 if(transaction.transactionTypeId === 1) {
                     //withdrawal
-                    individualAccounts[transaction.accountId].withdrawalMonthlyQuantity += 1;
-                    individualAccounts[transaction.accountId].withdrawalMonthlyAmount += transaction.amount;
+                    individualAccounts[transaction.accountId].withdrawalsMonthlyQuantity += 1;
+                    individualAccounts[transaction.accountId].withdrawalsMonthlyAmount += transaction.amount;
                 }
                 if(transaction.transactionTypeId === 2) {
                     //deposit
@@ -406,8 +407,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         transactionsMonthlyAllAccountsQuantity: transactionData.transactionsMonthlyAllAccountsQuantity,
         depositsMonthlyAllAccountsQuantity: transactionData.depositsMonthlyAllAccountsQuantity,
         depositsMonthlyAllAccountsAmount: transactionData.depositsMonthlyAllAccountsAmount,
-        withdrawalMonthlyAllAccountsQuantity: transactionData.withdrawalMonthlyAllAccountsQuantity,
-        withdrawalMonthlyAllAccountsAmount: transactionData.withdrawalMonthlyAllAccountsAmount,
+        withdrawalsMonthlyAllAccountsQuantity: transactionData.withdrawalsMonthlyAllAccountsQuantity,
+        withdrawalsMonthlyAllAccountsAmount: transactionData.withdrawalsMonthlyAllAccountsAmount,
         transfersMonthlyAllAccountsQuantity: transactionData.transfersMonthlyAllAccountsQuantity,
         transfersMonthlyAllAccountsAmount: transactionData.transfersMonthlyAllAccountsAmount
     }
