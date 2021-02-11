@@ -295,7 +295,7 @@ INSERT INTO transaction_(
     user_id, 
     account_id ) VALUES 
 (
-    -75.00,
+    75.00,
     DEFAULT,
     'cheesecake factory',
     5,
@@ -315,7 +315,7 @@ INSERT INTO transaction_(
     2
 ),
 (
-    -100.00,
+    100.00,
     DEFAULT,
     'new shoes',
     1,
