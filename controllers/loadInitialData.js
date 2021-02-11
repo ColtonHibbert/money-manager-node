@@ -260,31 +260,61 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     const transactionsArray = formatTransactions();
     //FILTER HERE 
     console.log("transactionsArray: ",transactionsArray)
+
+    const date31DaysPrior = (Date.now - (60000 * 60 * 24 * 31));
     
+    const formatMonthlyTransactionsAllAccounts = (transactionsArray) => {
+        const transactionsMonthlyAllAccounts = [];
+
+        transactionsArray.map(transaction => {
+            if(Date.parse(transaction.date) > date31DaysPrior) {
+                monthlyTransactionsAllAccounts.push(transaction);
+            }
+        })
+
+        const transactionData = {
+            transactionsMonthlyAllAccounts: transactionsMonthlyAllAccounts,
+        };
+
+        return transactionData
+                
+    }
+
+    const transactionData = formatMonthlyTransactionsAllAccounts(transactionsArray);
+  
+
     const formatIndividualAccountsWithTransactions = () => {
+        const transactionsMonthly = [];
+        let transactionsMonthlyQuantity = 0;
+
+        //alter individualAccounts
         transactionsArray.map(transaction => {
             //console.log("individualAccounts[transaction.accountId], transaction.accountId",individualAccounts[transaction.accountId], transaction.accountId)
             if(individualAccounts[transaction.accountId].accountId === transaction.accountId) {
                 individualAccounts[transaction.accountId].transactions.push(transaction);
             }
-            if()
+            //
+            if(individualAccounts[transaction.accountId].accountId === transaction.accountId && Date.parse(individualAccounts[transaction.accountId].date) ) {
+                individualAccounts[transaction.accountId].transactions.push(transaction);
+            }
          })
     }
-    formatIndividualAccountsWithTransactions();
+    const transactionsData = formatIndividualAccountsWithTransactions();
 
-    // individualAccount,
-    // add array of monthly transactions, by filtering through the transactions I already grabbed
-    // go back 30 days in JS and filter by that
-    // monthlyTransactions: [],
-    // then filter through the monthlyTransactions and look up the type, build amounts
-    // depositsMonthly: quantity
-    // depositsMonthlyAmount: dollars
-    // spendingMonthly: quantity
-    // spendingMonthlyAmount: dollars
-    // totalMontlyTransactions: quantity
-    // monthlyTransfers: dollars???
+    /*
+    transactions: [],
+    transactionsMonthly: [],
+    transactionsMonthlyQuantity: 0,
+    depositsMonthlyQuantity: 0,
+    depositsMonthlyAmount: 0,
+    spendingMonthlyQuantity: 0,
+    spendingMonthlyAmount: 0,
+    transfersMonthlyQuantity: 0,
+    transfersMonthlyAmount: 0
     console.log(individualAccounts);
+    */
 
+    /*
     const sortAccountTransactions = () => {
         for(account in individualAccounts) {
             let monthlyTransactions = [];
@@ -292,6 +322,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
             for(account.tra)
         }
     }
+    */
 
     const formatIndividualAccountsToArray = () => {
         const individualAccountsKeysArray = [];
@@ -337,7 +368,14 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         individualAccounts: individualAccountsArray,
         categoriesAndItems: categoriesAndItemsArray,
         transactionsAllAccounts: transactionsArray,
-        transactionsMonthlyAllAccounts: 
+        transactionsMonthlyAllAccounts: transactionData.transactionsMonthlyAllAccounts,
+        transactionsMonthlyQuantity: transactionData.transactionsMonthlyAllAccounts.length,
+        depositsMonthlyQuantity: 0,
+        depositsMonthlyAmount: 0,
+        spendingMonthlyQuantity: 0,
+        spendingMonthlyAmount: 0,
+        transfersMonthlyQuantity: 0,
+        transfersMonthlyAmount: 0
     }
 
     //console.log(initialData)
