@@ -229,7 +229,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         console.log("loadInitialData: error with getting transactions");
         return res.status(400).json({error: "There was an error loading your data."});
     })
-    console.log("transactionsInDB: ", transactionsInDB)
+    //console.log("transactionsInDB: ", transactionsInDB)
 
     const formatTransactions = () => {
         const transactionsArray = [];
@@ -319,7 +319,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
 
     const transactionData = formatMonthlyTransactionsAllAccounts(transactionsArray);
   
-    console.log("transactionData:", transactionData);
+    //console.log("transactionData:", transactionData);
 
     const formatIndividualAccountsWithTransactions = () => {
 
@@ -327,14 +327,15 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         transactionsArray.map(transaction => {
             //console.log("individualAccounts[transaction.accountId], transaction.accountId",individualAccounts[transaction.accountId], transaction.accountId)
             if(individualAccounts[transaction.accountId].accountId === transaction.accountId) {
+                //console.log("transaction push")
                 individualAccounts[transaction.accountId].transactions.push(transaction);
             }
-            //
-            if(individualAccounts[transaction.accountId].accountId === transaction.accountId && Date.parse(individualAccounts[transaction.accountId].date) > date31DaysPrior) {
+            if(individualAccounts[transaction.accountId].accountId === transaction.accountId && Date.parse(transaction.date) > date31DaysPrior) {
                 individualAccounts[transaction.accountId].transactionsMonthly.push(transaction);
                 individualAccounts[transaction.accountId].transactionsMonthlyQuantity += 1;
+                ///console.log("transactionsmonthly push")
             }
-            if(individualAccounts[transaction.accountId].accountId === transaction.accountId && Date.parse(individualAccounts[transaction.accountId].date) > date31DaysPrior) {
+            if(individualAccounts[transaction.accountId].accountId === transaction.accountId && Date.parse(transaction.date) > date31DaysPrior) {
                 if(transaction.transactionTypeId === 1) {
                     //withdrawal
                     individualAccounts[transaction.accountId].withdrawalsMonthlyQuantity += 1;
@@ -356,7 +357,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
 
     }
     formatIndividualAccountsWithTransactions();
-
+    //console.log("individualAccounts: ", individualAccounts);
 
 
     const formatIndividualAccountsToArray = () => {
@@ -374,6 +375,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         return individualAccountsArray;
     }
     const individualAccountsArray = formatIndividualAccountsToArray();
+    //console.log(individualAccountsArray);
 
     const formatCategoriesAndItemsToArray = () => {
         const categoriesKeysArray = [];
