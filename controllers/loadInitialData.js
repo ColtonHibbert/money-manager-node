@@ -39,8 +39,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
                 transactionsMonthlyQuantity: 0,
                 depositsMonthlyQuantity: 0,
                 depositsMonthlyAmount: 0,
-                spendingMonthlyQuantity: 0,
-                spendingMonthlyAmount: 0,
+                withdrawalMonthlyQuantity: 0,
+                withdrawalMonthlyAmount: 0,
                 transfersMonthlyQuantity: 0,
                 transfersMonthlyAmount: 0
             }
@@ -265,15 +265,49 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     
     const formatMonthlyTransactionsAllAccounts = (transactionsArray) => {
         const transactionsMonthlyAllAccounts = [];
+        let withdrawalQuantity = 0;
+        let withdrawalAmount = 0;
+        let depositsQuantity = 0;
+        let depositsAmount = 0;
+        let transferQuantity = 0;
+        let transferAmount = 0;
+
 
         transactionsArray.map(transaction => {
             if(Date.parse(transaction.date) > date31DaysPrior) {
                 monthlyTransactionsAllAccounts.push(transaction);
             }
+            if(Date.parse(transaction.date) > date31DaysPrior) {
+                if(transaction.transactionTypeId === 1) {
+                    //withdrawal
+                    withdrawalQuantity += 1;
+                    withdrawalAmount += transaction.amount;
+                }
+                if(transaction.transactionTypeId === 2) {
+                    //deposit
+                    depositsQuantity += 1;
+                    depositsAmount += transasction.amount;
+                }
+                if(transaction.transactionTypeId === 3) {
+                    //transfer
+                    transferQuantity += 1;
+                    transferAmount += transaction.amount;
+                }
+                
+            }
+            
         })
+
 
         const transactionData = {
             transactionsMonthlyAllAccounts: transactionsMonthlyAllAccounts,
+            transactionsMonthlyAllAccountsQuantity: transactionsMonthlyAllAccounts.length,
+            depositsMonthlyAllAccountsQuantity: depositsQuantity,
+            depositsMonthlyAllAccountsAmount: depositsAmount,
+            spendingMonthlyAllAccountsQuantity: ,
+            spendingMonthlyAllAccountsAmount: 0,
+            transfersMonthlyAllAccountsQuantity: 0,
+            transfersMonthlyAllAccountsAmount: 0
         };
 
         return transactionData
@@ -307,8 +341,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     transactionsMonthlyQuantity: 0,
     depositsMonthlyQuantity: 0,
     depositsMonthlyAmount: 0,
-    spendingMonthlyQuantity: 0,
-    spendingMonthlyAmount: 0,
+    withdrawalMonthlyQuantity: 0,
+    withrawalMonthlyAmount: 0,
     transfersMonthlyQuantity: 0,
     transfersMonthlyAmount: 0
     console.log(individualAccounts);
@@ -369,13 +403,13 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         categoriesAndItems: categoriesAndItemsArray,
         transactionsAllAccounts: transactionsArray,
         transactionsMonthlyAllAccounts: transactionData.transactionsMonthlyAllAccounts,
-        transactionsMonthlyQuantity: transactionData.transactionsMonthlyAllAccounts.length,
-        depositsMonthlyQuantity: 0,
-        depositsMonthlyAmount: 0,
-        spendingMonthlyQuantity: 0,
-        spendingMonthlyAmount: 0,
-        transfersMonthlyQuantity: 0,
-        transfersMonthlyAmount: 0
+        transactionsMonthlyAllAccountsQuantity: transactionData.transactionsMonthlyAllAccountsQuantity,
+        depositsMonthlAllAccountsQuantity: 0,
+        depositsMonthlyAllAccountsAmount: 0,
+        withdrawalMonthlyAllAccountsQuantity: 0,
+        withdrawalMonthlyAllAccountsAmount: 0,
+        transfersMonthlyAllAccountsQuantity: 0,
+        transfersMonthlyAllAccountsAmount: 0
     }
 
     //console.log(initialData)
