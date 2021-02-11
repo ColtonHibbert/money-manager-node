@@ -298,16 +298,15 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
             
         })
 
-
         const transactionData = {
             transactionsMonthlyAllAccounts: transactionsMonthlyAllAccounts,
             transactionsMonthlyAllAccountsQuantity: transactionsMonthlyAllAccounts.length,
             depositsMonthlyAllAccountsQuantity: depositsQuantity,
             depositsMonthlyAllAccountsAmount: depositsAmount,
-            spendingMonthlyAllAccountsQuantity: ,
-            spendingMonthlyAllAccountsAmount: 0,
-            transfersMonthlyAllAccountsQuantity: 0,
-            transfersMonthlyAllAccountsAmount: 0
+            withdrawalMonthlyAllAccountsQuantity: withdrawalQuantity,
+            withdrawalMonthlyAllAccountsAmount: withdrawalAmount,
+            transfersMonthlyAllAccountsQuantity: transferQuantity,
+            transfersMonthlyAllAccountsAmount: transferAmount
         };
 
         return transactionData
@@ -318,8 +317,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
   
 
     const formatIndividualAccountsWithTransactions = () => {
-        const transactionsMonthly = [];
-        let transactionsMonthlyQuantity = 0;
+        //const transactionsMonthly = [];
+        //let transactionsMonthlyQuantity = 0;
 
         //alter individualAccounts
         transactionsArray.map(transaction => {
@@ -328,12 +327,31 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
                 individualAccounts[transaction.accountId].transactions.push(transaction);
             }
             //
-            if(individualAccounts[transaction.accountId].accountId === transaction.accountId && Date.parse(individualAccounts[transaction.accountId].date) ) {
-                individualAccounts[transaction.accountId].transactions.push(transaction);
+            if(individualAccounts[transaction.accountId].accountId === transaction.accountId && Date.parse(individualAccounts[transaction.accountId].date) > date31DaysPrior) {
+                individualAccounts[transaction.accountId].transactionsMonthly.push(transaction);
+                individualAccounts[transaction.accountId].transactionsMonthlyQuantity += 1;
+            }
+            if(individualAccounts[transaction.accountId].accountId === transaction.accountId && Date.parse(individualAccounts[transaction.accountId].date) > date31DaysPrior) {
+                if(transaction.transactionTypeId === 1) {
+                    //withdrawal
+                    individualAccounts[transaction.accountId].withdrawalMonthlyQuantity += 1;
+                    individualAccounts[transaction.accountId].withdrawalMonthlyAmount += transaction.amount;
+                }
+                if(transaction.transactionTypeId === 2) {
+                    //deposit
+                    individualAccounts[transaction.accountId].depositsMonthlyQuantity += 1;
+                    individualAccounts[transaction.accountId].depositsMonthlyAmount += transaction.amount;
+                    
+                }
+                if(transaction.transactionTypeId === 3) {
+                    //transfer
+                }
             }
          })
+
+
     }
-    const transactionsData = formatIndividualAccountsWithTransactions();
+    const individualAccountTransactionsData = formatIndividualAccountsWithTransactions();
 
     /*
     transactions: [],
@@ -348,15 +366,6 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     console.log(individualAccounts);
     */
 
-    /*
-    const sortAccountTransactions = () => {
-        for(account in individualAccounts) {
-            let monthlyTransactions = [];
-            const date31DaysPrior = (Date.now - (60000 * 60 * 24 * 31))
-            for(account.tra)
-        }
-    }
-    */
 
     const formatIndividualAccountsToArray = () => {
         const individualAccountsKeysArray = [];
@@ -404,12 +413,12 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         transactionsAllAccounts: transactionsArray,
         transactionsMonthlyAllAccounts: transactionData.transactionsMonthlyAllAccounts,
         transactionsMonthlyAllAccountsQuantity: transactionData.transactionsMonthlyAllAccountsQuantity,
-        depositsMonthlAllAccountsQuantity: 0,
-        depositsMonthlyAllAccountsAmount: 0,
-        withdrawalMonthlyAllAccountsQuantity: 0,
-        withdrawalMonthlyAllAccountsAmount: 0,
-        transfersMonthlyAllAccountsQuantity: 0,
-        transfersMonthlyAllAccountsAmount: 0
+        depositsMonthlyAllAccountsQuantity: transactionData.depositsMonthlyAllAccountsQuantity,
+        depositsMonthlyAllAccountsAmount: transactionData.depositsMonthlyAllAccountsAmount,
+        withdrawalMonthlyAllAccountsQuantity: transactionData.withdrawalMonthlyAllAccountsQuantity,
+        withdrawalMonthlyAllAccountsAmount: transactionData.withdrawalMonthlyAllAccountsAmount,
+        transfersMonthlyAllAccountsQuantity: transactionData.transfersMonthlyAllAccountsQuantity,
+        transfersMonthlyAllAccountsAmount: transactionData.transfersMonthlyAllAccountsAmount
     }
 
     //console.log(initialData)
