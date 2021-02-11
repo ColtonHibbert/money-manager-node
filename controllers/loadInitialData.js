@@ -261,7 +261,7 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
     //FILTER HERE 
     console.log("transactionsArray: ",transactionsArray)
 
-    const date31DaysPrior = (Date.now - (60000 * 60 * 24 * 31));
+    const date31DaysPrior = (Date.now() - (60000 * 60 * 24 * 31));
     
     const formatMonthlyTransactionsAllAccounts = (transactionsArray) => {
         const transactionsMonthlyAllAccounts = [];
@@ -274,6 +274,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
 
 
         transactionsArray.map(transaction => {
+            console.log(Date.parse(transaction.date) > date31DaysPrior)
+            console.log("date, date.parse, 31prior :", transaction.date, Date.parse(transaction.date), date31DaysPrior)
             if(Date.parse(transaction.date) > date31DaysPrior) {
                 monthlyTransactionsAllAccounts.push(transaction);
             }
@@ -312,13 +314,13 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
         return transactionData
                 
     }
+   
 
     const transactionData = formatMonthlyTransactionsAllAccounts(transactionsArray);
   
+    console.log("transactionData:", transactionData);
 
     const formatIndividualAccountsWithTransactions = () => {
-        //const transactionsMonthly = [];
-        //let transactionsMonthlyQuantity = 0;
 
         //alter individualAccounts
         transactionsArray.map(transaction => {
@@ -341,30 +343,19 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
                     //deposit
                     individualAccounts[transaction.accountId].depositsMonthlyQuantity += 1;
                     individualAccounts[transaction.accountId].depositsMonthlyAmount += transaction.amount;
-                    
                 }
                 if(transaction.transactionTypeId === 3) {
                     //transfer
+                    individualAccounts[transaction.accountId].transfersMonthlyQuantity += 1;
+                    individualAccounts[transaction.accountId].transfersMonthlyAmount += transaction.amount;
                 }
             }
          })
 
 
     }
-    const individualAccountTransactionsData = formatIndividualAccountsWithTransactions();
+    formatIndividualAccountsWithTransactions();
 
-    /*
-    transactions: [],
-    transactionsMonthly: [],
-    transactionsMonthlyQuantity: 0,
-    depositsMonthlyQuantity: 0,
-    depositsMonthlyAmount: 0,
-    withdrawalMonthlyQuantity: 0,
-    withrawalMonthlyAmount: 0,
-    transfersMonthlyQuantity: 0,
-    transfersMonthlyAmount: 0
-    console.log(individualAccounts);
-    */
 
 
     const formatIndividualAccountsToArray = () => {
