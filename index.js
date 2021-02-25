@@ -32,6 +32,7 @@ const { handleProfileEdit }  = require("./controllers/profileEdit.js");
 const { handleEmailEdit } = require("./controllers/emailEdit.js");
 const { handlePasswordEdit } = require("./controllers/passwordEdit.js");
 const { handleEditIndividualAccount } = require("./controllers/editIndividualAccount.js");
+const { handleAddTransaction } = require("./controllers/addTransaction.js"); 
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -142,7 +143,9 @@ app.get("/loadinitialdata", sessionChecker, (req, res, next) => {handleLoadIniti
 
 //app.get(/loadinitialownerormemberdata, sessionChecker, )
 
-app.post("/editindividualaccount", sessionChecker, (req, res, next) => {handleEditIndividualAccount(req, res, next, postgresDB)})
+app.post("/editindividualaccount", sessionChecker, (req, res, next) => {handleEditIndividualAccount(req, res, next, postgresDB)});
+
+app.post("/addtransaction", sessionChecker, (req, res, next) => {handleAddTransaction(req, res, next, postgresDB)});
 
 // app.post("/editindividualtransaction", sessionChecker, )
 
