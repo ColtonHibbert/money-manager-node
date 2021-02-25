@@ -5,9 +5,11 @@ const handleAddTransaction = ( async(req, res, next, postgresDB) => {
     addTransactionMemoNote,
     addTransactionPersonalBudgetCategoryId,
     addTransactionPersonalBudgetCategoryItemId,
+    addTransactionUserId,
+    addTransactionAccountId
     } = req.body;
 
-    const updatedTransaction = await postgresDB.transaction(trx => {
+    let updatedTransaction = await postgresDB.transaction(trx => {
         return trx.insert({
             amount: addTransactionAmount,
             memo_note: addTransactionMemoNote,
