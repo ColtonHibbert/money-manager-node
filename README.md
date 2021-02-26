@@ -11,4 +11,4 @@ Database: Postgres, Database Integration/ORM: Knex.js
 Front-End: React, Tachyons CSS Library 
 
 
-See the backend code: https://github.com/ColtonHibbert/money-manager
+See the front-end code: https://github.com/ColtonHibbert/money-manager
