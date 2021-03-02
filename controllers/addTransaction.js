@@ -79,7 +79,7 @@ const handleAddTransaction = ( async(req, res, next, postgresDB) => {
     };
 
     const configuredAccount = {
-        accountId: updatedAccount.accountId,
+        accountId: updatedAccount.account_id,
         currentBalance: Number(updatedAccount.current_balance)
     }
 
