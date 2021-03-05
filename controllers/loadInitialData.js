@@ -252,7 +252,8 @@ const handleLoadInitialData = (async (req, res, next, postgresDB) => {
                 householdBudgetCategoryItemId: transaction.household_budget_category_item_id,
                 transactionTypeId: transaction.transaction_type_id,
                 userId: transaction.user_id,
-                accountId: transaction.account_id
+                accountId: transaction.account_id,
+                edit: false
             };
             transactionsArray.push(updatedTransaction);
         })
