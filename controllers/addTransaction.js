@@ -76,7 +76,14 @@ const handleAddTransaction = ( async(req, res, next, postgresDB) => {
         transactionTypeId: transaction.transaction_type_id,
         userId: transaction.user_id,
         accountId: transaction.account_id,
-        edit: false
+        edit: false,
+        editTransactionAmount: 0,
+        editTransactionTransactionTypeId: 0,
+        editTransactionMemoNote: 0,
+        editTransactionPersonalBudgetCategoryId: 0,
+        editTransactionPersonalBudgetCategoryItem: 0,
+        editTransactionDeleteDisplay: false, 
+        editTransactionDeleteConfirmation: false
     };
 
     const configuredAccount = {
