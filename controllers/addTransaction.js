@@ -83,6 +83,7 @@ const handleAddTransaction = ( async(req, res, next, postgresDB) => {
         editTransactionPersonalBudgetCategoryId: 0,
         editTransactionPersonalBudgetCategoryItemId: 0,
         editTransactionDeleteDisplay: false, 
+        editTransactionError: false,
         editTransactionDeleteConfirmation: false
     };
 
