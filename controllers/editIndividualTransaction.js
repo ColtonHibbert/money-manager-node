@@ -10,6 +10,13 @@ const handleEditIndividualTransaction = ( async (req, res, next, postgresDB) => 
         editTransactionTransactionId
     } = req.body;
 
+    let account = await postgresDB.select("*").from("account").where("account_id", "=", transaction.account_id);
+    account = account[0];
+
+    let previousTransaction = await postgresDB.select(["amount", "transaction_type_id"]).from("transaction_").where("transaction_id", "=", editTransactionTransactionId);
+    previousTransaction = previousTransaction[0];
+
+
     let transaction = await postgresDB.transaction(trx => {
         return trx("transaction_").where("transaction_id", "=", editTransactionTransactionId)
         .returning("*")
@@ -32,23 +39,24 @@ const handleEditIndividualTransaction = ( async (req, res, next, postgresDB) => 
     transaction = transaction[0];
 
     const configureAmount = () => {
-        if(transaction.transaction_type_id === 1 || transaction.transaction_type_id === 3) {
-            return -Number(transaction.amount);
+        // undo old amount
+        let undoAmount = null;
+        if(previousTransaction.transactionTypeId === 1 || previousTransaction.transaction_type_id === 3) {
+            undoAmount = Number(previousTransaction.amount);
         } else {
-            return Number(transaction.amount);
+            undoAmount = -Number(previousTransaction.amount); 
+        }
+
+        //add new amount and counteract old amount
+        if(transaction.transaction_type_id === 1 || transaction.transaction_type_id === 3) {
+            return -Number(transaction.amount) + undoAmount;
+        } else {
+            return Number(transaction.amount) + undoAmount;
         }
     }
 
     const configuredAmount = configureAmount();
 
-    let account = await postgresDB.select("*").from("account").where("account_id", "=", transaction.account_id);
-    account = account[0];
-    console.log(account);
-    console.log(account.account_id);
-    console.log(account.current_balance);
-    console.log(Number(account.current_balance))
-    console.log(configuredAmount);
-    console.log("math it", Number(account.current_balance) + configuredAmount)
     let updatedAccount = await postgresDB.transaction(trx => {
         return trx("account").where("account_id", "=", account.account_id)
         .returning(["account_id", "current_balance"])
