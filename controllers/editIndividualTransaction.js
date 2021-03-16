@@ -10,8 +10,6 @@ const handleEditIndividualTransaction = ( async (req, res, next, postgresDB) => 
         editTransactionTransactionId
     } = req.body;
 
-    let account = await postgresDB.select("*").from("account").where("account_id", "=", transaction.account_id);
-    account = account[0];
 
     let previousTransaction = await postgresDB.select(["amount", "transaction_type_id"]).from("transaction_").where("transaction_id", "=", editTransactionTransactionId);
     previousTransaction = previousTransaction[0];
@@ -37,6 +35,9 @@ const handleEditIndividualTransaction = ( async (req, res, next, postgresDB) => 
         return res.status(400).json({error: "There was an error updating the transaction."});
     }
     transaction = transaction[0];
+    
+    let account = await postgresDB.select("*").from("account").where("account_id", "=", transaction.account_id);
+    account = account[0];
 
     const configureAmount = () => {
         // undo old amount
