@@ -10,8 +10,6 @@ const handleEditIndividualTransaction = ( async (req, res, next, postgresDB) => 
         editTransactionTransactionId
     } = req.body;
 
-    let account = await postgresDB.select("*").from("account").where("account_id", "=", transaction.account_id);
-    account = account[0];
 
     let previousTransaction = await postgresDB.select(["amount", "transaction_type_id"]).from("transaction_").where("transaction_id", "=", editTransactionTransactionId);
     previousTransaction = previousTransaction[0];
@@ -37,20 +35,29 @@ const handleEditIndividualTransaction = ( async (req, res, next, postgresDB) => 
         return res.status(400).json({error: "There was an error updating the transaction."});
     }
     transaction = transaction[0];
+    
+    let account = await postgresDB.select("*").from("account").where("account_id", "=", transaction.account_id);
+    account = account[0];
 
     const configureAmount = () => {
         // undo old amount
         let undoAmount = null;
-        if(previousTransaction.transactionTypeId === 1 || previousTransaction.transaction_type_id === 3) {
+        if(previousTransaction.transaction_type_id === 1 || previousTransaction.transaction_type_id === 3) {
+            // to undo the amount, if previous transaction was withdrawal or transfer we need to add to reverse the transaction
             undoAmount = Number(previousTransaction.amount);
         } else {
+            //to undo an old deposit we need to take money away
             undoAmount = -Number(previousTransaction.amount); 
         }
 
+        console.log(undoAmount,"undo amount")
+        console.log(previousTransaction.amount, "previousTransaction.amount")
         //add new amount and counteract old amount
         if(transaction.transaction_type_id === 1 || transaction.transaction_type_id === 3) {
+            console.log(-Number(transaction.amount) + undoAmount, "-Number(transaction.amount) + undoAmount")
             return -Number(transaction.amount) + undoAmount;
         } else {
+            console.log(Number(transaction.amount) + undoAmount, "Number(transaction.amount) + undoAmount")
             return Number(transaction.amount) + undoAmount;
         }
     }
