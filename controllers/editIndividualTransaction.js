@@ -42,16 +42,22 @@ const handleEditIndividualTransaction = ( async (req, res, next, postgresDB) => 
     const configureAmount = () => {
         // undo old amount
         let undoAmount = null;
-        if(previousTransaction.transactionTypeId === 1 || previousTransaction.transaction_type_id === 3) {
+        if(previousTransaction.transaction_type_id === 1 || previousTransaction.transaction_type_id === 3) {
+            // to undo the amount, if previous transaction was withdrawal or transfer we need to add to reverse the transaction
             undoAmount = Number(previousTransaction.amount);
         } else {
+            //to undo an old deposit we need to take money away
             undoAmount = -Number(previousTransaction.amount); 
         }
 
+        console.log(undoAmount,"undo amount")
+        console.log(previousTransaction.amount, "previousTransaction.amount")
         //add new amount and counteract old amount
         if(transaction.transaction_type_id === 1 || transaction.transaction_type_id === 3) {
+            console.log(-Number(transaction.amount) + undoAmount, "-Number(transaction.amount) + undoAmount")
             return -Number(transaction.amount) + undoAmount;
         } else {
+            console.log(Number(transaction.amount) + undoAmount, "Number(transaction.amount) + undoAmount")
             return Number(transaction.amount) + undoAmount;
         }
     }
