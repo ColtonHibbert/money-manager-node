@@ -93,7 +93,7 @@ const handleEditIndividualTransaction = ( async (req, res, next, postgresDB) => 
 
     const configuredAccount = {
         accountId: updatedAccount.account_id,
-        currentBalance: updatedAccount.current_balance
+        currentBalance: Number(updatedAccount.current_balance)
     }
 
     const editResponse = {
