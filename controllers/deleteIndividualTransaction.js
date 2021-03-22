@@ -2,13 +2,13 @@
 const handleDeleteIndividualTransaction = (async (req, res, next, postgresDB ) => {
 
     const {
-        deleteTransactionId
+        transactionId
         } = req.body;
 
         let deletedTransaction = await postgresDB.transaction(trx => {
             return trx("transaction_")
-            .where("transaction_id", "=", deleteTransactionId)
-            .returning("*")
+            .where("transaction_id", "=", transactionId)
+            .returning(["transaction_id", "amount", "transaction_type_id", "account_id"])
             .del()
             .then(trx.commit)
             .catch(trx.rollback)
@@ -16,7 +16,7 @@ const handleDeleteIndividualTransaction = (async (req, res, next, postgresDB ) =
         if(deletedTransaction === undefined) {
             return res.status(400).json({error: "There was an error deleting the transaction"});
         }
-        deletedTransaction = deltedTransaction[0]; 
+        deletedTransaction = deletedTransaction[0]; 
     
         const configureAmount = () => {
             if(deletedTransaction.transaction_type_id === 1 || deletedTransaction.transaction_type_id === 3) {
@@ -52,7 +52,7 @@ const handleDeleteIndividualTransaction = (async (req, res, next, postgresDB ) =
         
         const configuredTransaction = {
             transactionId: deletedTransaction.transaction_id,
-            transactionTypeId: deleteTransaction.transaction_type_id,
+            transactionTypeId: deletedTransaction.transaction_type_id,
             amount: deletedTransaction.amount
         };
     
