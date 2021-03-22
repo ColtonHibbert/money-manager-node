@@ -52,7 +52,8 @@ const handleDeleteIndividualTransaction = (async (req, res, next, postgresDB ) =
         
         const configuredTransaction = {
             transactionId: deletedTransaction.transaction_id,
-            transactionTypeId: deleteTransaction.transaction_type_id
+            transactionTypeId: deleteTransaction.transaction_type_id,
+            amount: deletedTransaction.amount
         };
     
         const configuredAccount = {
