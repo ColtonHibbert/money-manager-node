@@ -33,8 +33,9 @@ const { handleEmailEdit } = require("./controllers/emailEdit.js");
 const { handlePasswordEdit } = require("./controllers/passwordEdit.js");
 const { handleEditIndividualAccount } = require("./controllers/editIndividualAccount.js");
 const { handleAddTransaction } = require("./controllers/addTransaction.js"); 
-const { handleEditIndividualTransaction } = require("./controllers/editIndividualTransaction");
-const { handleDeleteIndividualTransaction } = require("./controllers/deleteIndividualTransaction");
+const { handleEditIndividualTransaction } = require("./controllers/editIndividualTransaction.js");
+const { handleDeleteIndividualTransaction } = require("./controllers/deleteIndividualTransaction.js");
+const { handleDeleteIndividualAccount } = require("./controllers/deleteIndividualAccount.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
