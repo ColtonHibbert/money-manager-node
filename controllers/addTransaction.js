@@ -97,8 +97,7 @@ const handleAddTransaction = ( async(req, res, next, postgresDB) => {
         configuredAccount
     }
 
-
-   res.send(JSON.stringify(transactionResponse));
+    res.send(JSON.stringify(transactionResponse));
 
 })
 
