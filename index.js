@@ -36,6 +36,7 @@ const { handleAddTransaction } = require("./controllers/addTransaction.js");
 const { handleEditIndividualTransaction } = require("./controllers/editIndividualTransaction.js");
 const { handleDeleteIndividualTransaction } = require("./controllers/deleteIndividualTransaction.js");
 const { handleDeleteIndividualAccount } = require("./controllers/deleteIndividualAccount.js");
+const { handleAddIndividualAccount }  = require("./controllers/addIndividualAccount.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -149,6 +150,8 @@ app.get("/loadinitialdata", sessionChecker, (req, res, next) => {handleLoadIniti
 app.post("/editindividualaccount", sessionChecker, (req, res, next) => {handleEditIndividualAccount(req, res, next, postgresDB)});
 
 app.post("/deleteindividualaccount",sessionChecker, (req, res, next ) => { handleDeleteIndividualAccount(req, res, next, postgresDB)});
+
+app.post("/addindividualaccount", sessionChecker, (req, res, next) =>  { handleAddIndividualAccount(req, res, next, postgresDB )});
 
 app.post("/addtransaction", sessionChecker, (req, res, next) => {handleAddTransaction(req, res, next, postgresDB)});
 
