@@ -148,6 +148,8 @@ app.get("/loadinitialdata", sessionChecker, (req, res, next) => {handleLoadIniti
 
 app.post("/editindividualaccount", sessionChecker, (req, res, next) => {handleEditIndividualAccount(req, res, next, postgresDB)});
 
+app.post("/deleteindividualaccount",sessionChecker, (req, res, next ) => { handleDeleteIndividualAccount(req, res, next, postgresDB)});
+
 app.post("/addtransaction", sessionChecker, (req, res, next) => {handleAddTransaction(req, res, next, postgresDB)});
 
 app.post("/editindividualtransaction", sessionChecker, (req, res, next) => {handleEditIndividualTransaction(req, res, next, postgresDB )});
