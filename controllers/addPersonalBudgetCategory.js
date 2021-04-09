@@ -80,7 +80,8 @@ const handleAddPersonalBudgetCategory = ( async (req, res, next, postgresDB ) =>
         personalBudgetCategoryId: personalBudgetCategory.personal_budget_category_id,
         budgetAmount: Number(personalBudgetCategory.budget_amount),
         categoryId: personalBudgetCategory.category_id,
-        userId: personalBudgetCategory.user_id
+        userId: personalBudgetCategory.user_id,
+        categoryName: category.category_name
     }
 
     return res.send(JSON.stringify(personalBudgetCategoryResponse));
