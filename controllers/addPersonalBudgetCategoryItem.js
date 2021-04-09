@@ -1,4 +1,4 @@
-const handleAddPersonalBudgetCategoryItem = (async (res, res, next, postgresDB) => {
+const handleAddPersonalBudgetCategoryItem = (async (req, res, next, postgresDB) => {
     let {
         userId,
         itemName,
@@ -7,7 +7,7 @@ const handleAddPersonalBudgetCategoryItem = (async (res, res, next, postgresDB) 
     itemName = itemName.toLowerCase();
     
     //check general items, insert if doesn't exist
-    let item = await postgresDB.select("*").from("category_item").where("item_name", "=", itemName);
+    let item = await postgresDB.select("*").from("category_item").where("category_item_name", "=", itemName);
     console.log("item check general items: ", item);
     
     await (async () => {
@@ -17,7 +17,7 @@ const handleAddPersonalBudgetCategoryItem = (async (res, res, next, postgresDB) 
         console.log("inserting general item here");
         item = await postgresDB.transaction(trx => {
             return trx.insert({
-                item_name: itemName
+                category_item_name: itemName
             })
             .into("category_item")
             .returning("*")
@@ -72,7 +72,7 @@ const handleAddPersonalBudgetCategoryItem = (async (res, res, next, postgresDB) 
         personalBudgetCategoryItemId: personalBudgetCategoryItem.personal_budget_category_item_id,
         personalBudgetCategoryId: personalBudgetCategoryItem.personal_budget_category_id,
         categoryItemId: personalBudgetCategoryItem.category_item_id,
-        userId: personalBudgetCategoryItem.userId,
+        userId: personalBudgetCategoryItem.user_id,
         itemName: item.category_item_name
     }
 
