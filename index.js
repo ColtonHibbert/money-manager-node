@@ -37,6 +37,7 @@ const { handleEditIndividualTransaction } = require("./controllers/editIndividua
 const { handleDeleteIndividualTransaction } = require("./controllers/deleteIndividualTransaction.js");
 const { handleDeleteIndividualAccount } = require("./controllers/deleteIndividualAccount.js");
 const { handleAddIndividualAccount }  = require("./controllers/addIndividualAccount.js");
+const { handleAddPersonalBudgetCategory } = require("./controllers/addPersonalBudgetCategory.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -143,21 +144,23 @@ app.post("/forgotpassword", (req, res, next) => { handleForgotPassword(req, res,
 app.post("/passwordreset", (req, res, next) => { handlePasswordReset(req, res, next, postgresDB, bcrypt, nodemailer )});
 
 // protected routes
-app.get("/loadinitialdata", sessionChecker, (req, res, next) => {handleLoadInitialData(req, res, next, postgresDB )});
+app.get("/loadinitialdata", sessionChecker, (req, res, next) => { handleLoadInitialData(req, res, next, postgresDB )});
 
 //app.get(/loadinitialownerormemberdata, sessionChecker, )
 
-app.post("/editindividualaccount", sessionChecker, (req, res, next) => {handleEditIndividualAccount(req, res, next, postgresDB)});
+app.post("/editindividualaccount", sessionChecker, (req, res, next) => { handleEditIndividualAccount(req, res, next, postgresDB)});
 
 app.post("/deleteindividualaccount",sessionChecker, (req, res, next ) => { handleDeleteIndividualAccount(req, res, next, postgresDB)});
 
 app.post("/addindividualaccount", sessionChecker, (req, res, next) =>  { handleAddIndividualAccount(req, res, next, postgresDB )});
 
-app.post("/addtransaction", sessionChecker, (req, res, next) => {handleAddTransaction(req, res, next, postgresDB)});
+app.post("/addtransaction", sessionChecker, (req, res, next) => { handleAddTransaction(req, res, next, postgresDB)});
 
-app.post("/editindividualtransaction", sessionChecker, (req, res, next) => {handleEditIndividualTransaction(req, res, next, postgresDB )});
+app.post("/editindividualtransaction", sessionChecker, (req, res, next) => { handleEditIndividualTransaction(req, res, next, postgresDB )});
 
-app.post("/deleteindividualtransaction", sessionChecker, (req, res, next) => {handleDeleteIndividualTransaction(req, res, next, postgresDB )});
+app.post("/deleteindividualtransaction", sessionChecker, (req, res, next) => { handleDeleteIndividualTransaction(req, res, next, postgresDB )});
+
+app.post("/addPersonalBudgetCategory", sessionChecker, (req, res, next) => { handleAddPersonalBudgetCategory(req, res, next, postgresDB )});
 
 app.get("/loaduser", sessionChecker, (req, res, next) => { handleLoadUser(req, res, next) });
 
