@@ -28,22 +28,23 @@ const { handleCSRF } = require("./controllers/csrf.js");
 const { handleLogout } = require("./controllers/logout.js");
 const { handlePasswordReset } = require("./controllers/passwordReset.js");
 const { handleLoadInitialData } = require("./controllers/loadInitialData.js");
-const { handleProfileEdit }  = require("./controllers/profileEdit.js");
+const { handleProfileEdit } = require("./controllers/profileEdit.js");
 const { handleEmailEdit } = require("./controllers/emailEdit.js");
 const { handlePasswordEdit } = require("./controllers/passwordEdit.js");
 const { handleEditIndividualAccount } = require("./controllers/editIndividualAccount.js");
-const { handleAddTransaction } = require("./controllers/addTransaction.js"); 
+const { handleAddTransaction } = require("./controllers/addTransaction.js");
 const { handleEditIndividualTransaction } = require("./controllers/editIndividualTransaction.js");
 const { handleDeleteIndividualTransaction } = require("./controllers/deleteIndividualTransaction.js");
 const { handleDeleteIndividualAccount } = require("./controllers/deleteIndividualAccount.js");
-const { handleAddIndividualAccount }  = require("./controllers/addIndividualAccount.js");
+const { handleAddIndividualAccount } = require("./controllers/addIndividualAccount.js");
 const { handleAddPersonalBudgetCategory } = require("./controllers/addPersonalBudgetCategory.js");
 const { handleAddPersonalBudgetCategoryItem } = require("./controllers/addPersonalBudgetCategoryItem.js");
+const { handleDeletePersonalBudgetCategory } = require("./controllers/deletePersonalBudgetCategory.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
         console.log("development");
-        return(
+        return (
             knex({
                 client: "pg",
                 connection: process.env.POSTGRES_URI
@@ -58,7 +59,8 @@ function DBEnvironment() {
                 connection: {
                     connectionString: process.env.DATABASE_URL,
                     ssl: true
-            }})
+                }
+            })
         )
     }
 }
@@ -77,11 +79,11 @@ app.use(helmet());
 app.use(cors({
     origin: "http://localhost:3000",
     credentials: true
- }));
+}));
 
 app.use(bodyparser.json());
 
-if (process.env.NODE_ENV === "development" ) {
+if (process.env.NODE_ENV === "development") {
     app.use(session({
         name: "mySession",
         secret: process.env.SESSION_SECRET,
@@ -95,7 +97,7 @@ if (process.env.NODE_ENV === "development" ) {
         store: new RedisStore({ client: redisClient })
     }))
 }
-if (process.env.NODE_ENV !== "development" ) {
+if (process.env.NODE_ENV !== "development") {
     app.use(session({
         name: "mySession",
         secret: process.env.SESSION_SECRET,
@@ -117,67 +119,69 @@ const sessionChecker = (req, res, next) => {
     if (req.session.userId) {
         next();
     }
-    if(!req.session.userId) {
-        return res.status(200).json({error: "No valid session."});
+    if (!req.session.userId) {
+        return res.status(200).json({ error: "No valid session." });
     }
 }
- 
+
 app.use(csrf());
 
 app.use(function (err, req, res, next) {
     if (err.code !== 'EBADCSRFTOKEN') return next(err)
-  
+
     res.status(403);
     res.send({ error: "Invalid token, please refresh browser and try again." })
-  })
+})
 
 app.use(morgan("combined"));
 //end of middleware
 
-app.get("/csrf", (req, res, next) => { handleCSRF(req, res, next )} );
+app.get("/csrf", (req, res, next) => { handleCSRF(req, res, next) });
 
-app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt ); });
+app.post("/signup", (req, res, next) => { handleSignUp(req, res, next, postgresDB, bcrypt); });
 
 app.post("/login", (req, res, next) => { handleLogin(req, res, next, postgresDB, bcrypt); });
 
-app.post("/forgotpassword", (req, res, next) => { handleForgotPassword(req, res, next, postgresDB, nodemailer, crypto ) });
+app.post("/forgotpassword", (req, res, next) => { handleForgotPassword(req, res, next, postgresDB, nodemailer, crypto) });
 
-app.post("/passwordreset", (req, res, next) => { handlePasswordReset(req, res, next, postgresDB, bcrypt, nodemailer )});
+app.post("/passwordreset", (req, res, next) => { handlePasswordReset(req, res, next, postgresDB, bcrypt, nodemailer) });
 
 // protected routes
-app.get("/loadinitialdata", sessionChecker, (req, res, next) => { handleLoadInitialData(req, res, next, postgresDB )});
+app.get("/loadinitialdata", sessionChecker, (req, res, next) => { handleLoadInitialData(req, res, next, postgresDB) });
 
 //app.get(/loadinitialownerormemberdata, sessionChecker, )
 
-app.post("/editindividualaccount", sessionChecker, (req, res, next) => { handleEditIndividualAccount(req, res, next, postgresDB)});
+app.post("/editindividualaccount", sessionChecker, (req, res, next) => { handleEditIndividualAccount(req, res, next, postgresDB) });
 
-app.post("/deleteindividualaccount",sessionChecker, (req, res, next ) => { handleDeleteIndividualAccount(req, res, next, postgresDB)});
+app.post("/deleteindividualaccount", sessionChecker, (req, res, next) => { handleDeleteIndividualAccount(req, res, next, postgresDB) });
 
-app.post("/addindividualaccount", sessionChecker, (req, res, next) =>  { handleAddIndividualAccount(req, res, next, postgresDB )});
+app.post("/addindividualaccount", sessionChecker, (req, res, next) => { handleAddIndividualAccount(req, res, next, postgresDB) });
 
-app.post("/addtransaction", sessionChecker, (req, res, next) => { handleAddTransaction(req, res, next, postgresDB)});
+app.post("/addtransaction", sessionChecker, (req, res, next) => { handleAddTransaction(req, res, next, postgresDB) });
 
-app.post("/editindividualtransaction", sessionChecker, (req, res, next) => { handleEditIndividualTransaction(req, res, next, postgresDB )});
+app.post("/editindividualtransaction", sessionChecker, (req, res, next) => { handleEditIndividualTransaction(req, res, next, postgresDB) });
 
-app.post("/deleteindividualtransaction", sessionChecker, (req, res, next) => { handleDeleteIndividualTransaction(req, res, next, postgresDB )});
+app.post("/deleteindividualtransaction", sessionChecker, (req, res, next) => { handleDeleteIndividualTransaction(req, res, next, postgresDB) });
 
-app.post("/addPersonalBudgetCategory", sessionChecker, (req, res, next) => { handleAddPersonalBudgetCategory(req, res, next, postgresDB )});
+app.post("/addPersonalBudgetCategory", sessionChecker, (req, res, next) => { handleAddPersonalBudgetCategory(req, res, next, postgresDB) });
 
-app.post("/addpersonalbudgetcategoryitem", sessionChecker, (req, res, next) => { handleAddPersonalBudgetCategoryItem(req, res, next, postgresDB )});
+app.post("/addpersonalbudgetcategoryitem", sessionChecker, (req, res, next) => { handleAddPersonalBudgetCategoryItem(req, res, next, postgresDB) });
+
+app.post("/deletepersonalbudgetcategory", sessionChecker, (req, res, next) => { handleDeletePersonalBudgetCategory(req, res, next, postgresDB) });
 
 app.get("/loaduser", sessionChecker, (req, res, next) => { handleLoadUser(req, res, next) });
 
-app.post("/profileedit", sessionChecker, (req,res,next) => { handleProfileEdit(req, res, next, postgresDB )});
+app.post("/profileedit", sessionChecker, (req, res, next) => { handleProfileEdit(req, res, next, postgresDB) });
 
-app.post("/emailedit", sessionChecker, (req, res, next) => { handleEmailEdit(req, res, next ,postgresDB)});
+app.post("/emailedit", sessionChecker, (req, res, next) => { handleEmailEdit(req, res, next, postgresDB) });
 
-app.post("/passwordedit", sessionChecker, (req, res, next) => { handlePasswordEdit(req, res, next, postgresDB, bcrypt)});
+app.post("/passwordedit", sessionChecker, (req, res, next) => { handlePasswordEdit(req, res, next, postgresDB, bcrypt) });
 
-app.get("/accounts", sessionChecker, (req, res, next) => { handleAccounts(req, res, next, postgresDB )});
+app.get("/accounts", sessionChecker, (req, res, next) => { handleAccounts(req, res, next, postgresDB) });
 
-app.get("/transactions", sessionChecker, (req, res, next) => { handleTransactions(req, res, next, postgresDB )});
+app.get("/transactions", sessionChecker, (req, res, next) => { handleTransactions(req, res, next, postgresDB) });
 
-app.post("/logout", sessionChecker, (req, res, next) => { handleLogout(req, res, next, postgresDB )});
+app.post("/logout", sessionChecker, (req, res, next) => { handleLogout(req, res, next, postgresDB) });
 
-app.listen(process.env.PORT  || 3001, console.log(`app is running on port ${process.env.PORT}, or 3001`));
+app.listen(process.env.PORT || 3001, console.log(`app is running on port ${process.env.PORT}, or 3001`));
 
