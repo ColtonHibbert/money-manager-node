@@ -19,11 +19,7 @@ const handleDeletePersonalBudgetCategory = (async (req, res, next, postgresDB ) 
     }
     deletedPersonalBudgetCategory = deletedPersonalBudgetCategory[0];
 
-    const deletedPersonalBudgetCategoryResponse = {
-        personalBudgetCategoryId: deletedPersonalBudgetCategory.personal_budget_category_id
-    }
-
-    return res.send(JSON.stringify(deletedPersonalBudgetCategoryResponse))
+    return res.send(JSON.stringify(deletedPersonalBudgetCategory))
 }) 
 
 module.exports = {
