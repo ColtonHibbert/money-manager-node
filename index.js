@@ -40,6 +40,7 @@ const { handleAddIndividualAccount } = require("./controllers/addIndividualAccou
 const { handleAddPersonalBudgetCategory } = require("./controllers/addPersonalBudgetCategory.js");
 const { handleAddPersonalBudgetCategoryItem } = require("./controllers/addPersonalBudgetCategoryItem.js");
 const { handleDeletePersonalBudgetCategory } = require("./controllers/deletePersonalBudgetCategory.js");
+const { handleDeletePersonalBudgetCategoryItem } = require("./controllers/deletePersonalBudgetCategoryItem.js");
 
 function DBEnvironment() {
     if (process.env.NODE_ENV === "development") {
@@ -168,6 +169,8 @@ app.post("/addPersonalBudgetCategory", sessionChecker, (req, res, next) => { han
 app.post("/addpersonalbudgetcategoryitem", sessionChecker, (req, res, next) => { handleAddPersonalBudgetCategoryItem(req, res, next, postgresDB) });
 
 app.post("/deletepersonalbudgetcategory", sessionChecker, (req, res, next) => { handleDeletePersonalBudgetCategory(req, res, next, postgresDB) });
+
+app.post("/deletepersonalbudgetcategoryitem", sessionChecker, (req, res, next) => { handleDeletePersonalBudgetCategoryItem(req, res, next, postgresDB) });
 
 app.get("/loaduser", sessionChecker, (req, res, next) => { handleLoadUser(req, res, next) });
 
